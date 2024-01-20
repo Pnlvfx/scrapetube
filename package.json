@@ -31,7 +31,8 @@
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --moduleResolution node --outDir dist/cjs",
     "prepare": "npm run build",
-    "prepublishOnly": "npm run test && npm run lint"
+    "prepublishOnly": "npm run test && npm run lint",
+    "types": "tsx ./tools/types.cts"
   },
   "files": [
     "dist",
@@ -39,7 +40,8 @@
     "README.md"
   ],
   "dependencies": {
-    "coraline": "github:Pnlvfx/coraline"
+    "coraline": "github:Pnlvfx/coraline",
+    "joi": "^17.12.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.5",
@@ -52,6 +54,7 @@
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-sonarjs": "^0.23.0",
     "eslint-plugin-unicorn": "^50.0.1",
+    "joi-to-typescript": "^4.12.0",
     "prettier": "^3.2.4",
     "rimraf": "^5.0.5",
     "tsx": "^4.7.0",

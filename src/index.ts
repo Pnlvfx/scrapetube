@@ -1,6 +1,8 @@
-import type { Client } from './types/index.js';
+import type { Client } from './interfaces/client.js';
 import coraline from 'coraline';
 import { results_type_map, sort_by_map } from './config.js';
+import { Video } from './interfaces/video.js';
+import { videoSchema } from './schemas/video.js';
 
 const api_endpoint = 'https://www.youtube.com/youtubei/v1/search';
 
@@ -16,7 +18,7 @@ const scrapetube = {
     sleep = 1,
     sortBy: keyof typeof sort_by_map = 'relevance',
     resultsType: keyof typeof results_type_map = 'video',
-  ) {
+  ): AsyncGenerator<Video> {
     const [saha, selector] = results_type_map[resultsType];
     if (!saha || !selector) throw new Error('Invalid parameters provided');
     const param_string = `CA${sort_by_map[sortBy]}SAhA${saha}`;
@@ -26,6 +28,7 @@ const scrapetube = {
       yield video;
     }
   },
+  validate: videoSchema.validate,
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -135,5 +138,5 @@ export default scrapetube;
 
 // const videos = scrapetube.search('Reuters', 2, 0, 'upload_date', 'channel');
 // for await (const video of videos) {
-//   // console.log(video);
+//   videoSchema.validate(video);
 // }
