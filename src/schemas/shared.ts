@@ -51,6 +51,7 @@ export const navigationEndpointSchema = Joi.object({
   browseEndpoint: browseEndpointSchema, // for search channel
   watchEndpoint: Joi.object(watchEndpoint),
   signInEndpoint: signInEndpointSchema,
+  reelWatchEndpoint: Joi.any(),
 }).meta({ className: 'NavigationEndpoint' });
 
 export const thumbnailSchema = Joi.object({
