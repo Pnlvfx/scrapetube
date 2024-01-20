@@ -2,7 +2,9 @@ import Joi from 'joi';
 
 export const webCommandMetadataSchema = Joi.object({
   url: Joi.string().required(),
-  webPageType: Joi.string().valid('WEB_PAGE_TYPE_CHANNEL', 'WEB_PAGE_TYPE_WATCH', 'WEB_PAGE_TYPE_UNKNOWN', 'WEB_PAGE_TYPE_SEARCH').required(),
+  webPageType: Joi.string()
+    .valid('WEB_PAGE_TYPE_CHANNEL', 'WEB_PAGE_TYPE_WATCH', 'WEB_PAGE_TYPE_UNKNOWN', 'WEB_PAGE_TYPE_SEARCH', 'WEB_PAGE_TYPE_SHORTS')
+    .required(),
   rootVe: Joi.number().required(),
   apiUrl: Joi.string(),
 })

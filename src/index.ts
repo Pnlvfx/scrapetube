@@ -23,3 +23,9 @@ export default scrapetube;
 //   console.log(video);
 //   break;
 // }
+
+// const latestVideos = scrapetube.getChannel({ channelUsername: 'Reuters' });
+// for await (const video of latestVideos) {
+//   console.log(video);
+//   break;
+// }

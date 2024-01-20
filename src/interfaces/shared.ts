@@ -134,7 +134,7 @@ export interface WebCommandMetadata {
   apiUrl?: string;
   rootVe: number;
   url: string;
-  webPageType: 'WEB_PAGE_TYPE_CHANNEL' | 'WEB_PAGE_TYPE_WATCH' | 'WEB_PAGE_TYPE_UNKNOWN' | 'WEB_PAGE_TYPE_SEARCH';
+  webPageType: 'WEB_PAGE_TYPE_CHANNEL' | 'WEB_PAGE_TYPE_WATCH' | 'WEB_PAGE_TYPE_UNKNOWN' | 'WEB_PAGE_TYPE_SEARCH' | 'WEB_PAGE_TYPE_SHORTS';
 }
 
 export interface subscribeButton {
