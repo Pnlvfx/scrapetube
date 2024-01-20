@@ -13,13 +13,13 @@ export default scrapetube;
 //   console.log(video);
 // }
 
-const videos = scrapetube.search('Lei', 'video', { limit: 100 });
-for await (const video of videos) {
-  console.log(video.videoId);
-}
-
-// const videos = scrapetube.getChannel({ channelUsername: 'Reuters', limit: 5 });
+// const videos = scrapetube.search('Lei', 'video', { limit: 100 });
 // for await (const video of videos) {
-//   console.log(video);
-//   break;
+//   console.log(video.videoId);
 // }
+
+const videos = scrapetube.getChannel({ channelUsername: 'Reuters', limit: 5 });
+for await (const video of videos) {
+  console.log(video);
+  break;
+}

@@ -45,7 +45,7 @@ export const getVideos = async function* (url: string, { api_endpoint, limit, se
       if (sortBy && sortBy !== 'newest') continue;
     } else {
       console.log('scrapetube: using server!');
-      if (!apiKey || !nextData) throw new Error('Internal error: Incorrect loop, please report it to the github repository issue!');
+      if (!apiKey || !nextData || !client) throw new Error('Internal error: Incorrect loop, please report it to the github repository issue!');
       console.log({ nextData });
       data = await getAjaxData(api_endpoint, apiKey, nextData, client);
       nextData = getNextData(data);
@@ -63,7 +63,7 @@ export const getVideos = async function* (url: string, { api_endpoint, limit, se
   }
 };
 
-const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: Record<string, unknown>, client: unknown) => {
+const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: Record<string, unknown>, client: Client) => {
   const body = {
     context: { clickTracking: nextData['click_params'], client },
     continuation: nextData['token'],
