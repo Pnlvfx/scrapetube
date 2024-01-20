@@ -39,7 +39,7 @@
     "LICENSE",
     "README.md"
   ],
-  "dependencies": {
+  "peerDependencies": {
     "coraline": "github:Pnlvfx/coraline",
     "joi": "^17.12.0"
   },
