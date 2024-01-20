@@ -3,9 +3,11 @@
  * Do not modify this file manually
  */
 
+export type Badges = MetadataBadgeRenderer[];
+
 export interface BrowseEndpoint {
   browseId: string;
-  canonicalBaseUrl: string;
+  canonicalBaseUrl?: string;
 }
 
 export interface DescriptionSnippet {
@@ -19,15 +21,65 @@ export interface LongBylineText {
   }[];
 }
 
-export interface NavigationEndpoint {
-  browseEndpoint: BrowseEndpoint;
-  clickTrackingParams: string;
-  commandMetadata: {
-    webCommandMetadata: WebCommandMetadata;
+export interface MetadataBadgeRenderer {
+  metadataBadgeRenderer: {
+    accessibilityData?: {
+      label?: string;
+    };
+    icon?: {
+      iconType: 'CHECK_CIRCLE_THICK' | 'OFFICIAL_ARTIST_BADGE';
+    };
+    label?: string;
+    style?: 'BADGE_STYLE_TYPE_VERIFIED' | 'BADGE_STYLE_TYPE_SIMPLE' | 'BADGE_STYLE_TYPE_VERIFIED_ARTIST';
+    tooltip?: string;
+    trackingParams: string;
   };
 }
 
+export interface NavigationEndpoint {
+  browseEndpoint?: BrowseEndpoint;
+  clickTrackingParams?: string;
+  commandMetadata?: {
+    webCommandMetadata: WebCommandMetadata;
+  };
+  params?: string;
+  playerExtraUrlParams?: {
+    key: string;
+    value: string;
+  }[];
+  playerParams?: string;
+  signInEndpoint?: SignInEndpoint;
+  videoId?: string;
+  watchEndpoint?: {
+    params?: string;
+    playerExtraUrlParams?: {
+      key: string;
+      value: string;
+    }[];
+    playerParams?: string;
+    videoId?: string;
+    watchEndpointSupportedOnesieConfig?: {
+      html5PlaybackOnesieConfig: {
+        commonConfig: {
+          url: string;
+        };
+      };
+    };
+  };
+  watchEndpointSupportedOnesieConfig?: {
+    html5PlaybackOnesieConfig: {
+      commonConfig: {
+        url: string;
+      };
+    };
+  };
+}
+
+export type OwnerBadges = MetadataBadgeRenderer[];
+
 export type Runs = {
+  bold?: boolean;
+  navigationEndpoint?: NavigationEndpoint;
   text: string;
 }[];
 
@@ -36,6 +88,20 @@ export interface ShortBylineText {
     navigationEndpoint: NavigationEndpoint;
     text: string;
   }[];
+}
+
+export interface SignInEndpoint {
+  continueAction: string;
+  nextEndpoint: {
+    clickTrackingParams: string;
+    commandMetadata: {
+      webCommandMetadata: WebCommandMetadata;
+    };
+    searchEndpoint: {
+      params: string;
+      query: string;
+    };
+  };
 }
 
 export interface SubscriberCountText {
@@ -54,24 +120,21 @@ export interface Thumbnail {
   }[];
 }
 
-export interface Title {
-  simpleText: string;
-}
-
 export interface VideoCountText {
-  accessibility: {
+  accessibility?: {
     accessibilityData: {
       label: string;
     };
   };
-  simpleText: string;
+  runs?: Runs;
+  simpleText?: string;
 }
 
 export interface WebCommandMetadata {
-  apiUrl: string;
+  apiUrl?: string;
   rootVe: number;
   url: string;
-  webPageType: 'WEB_PAGE_TYPE_CHANNEL';
+  webPageType: 'WEB_PAGE_TYPE_CHANNEL' | 'WEB_PAGE_TYPE_WATCH' | 'WEB_PAGE_TYPE_UNKNOWN' | 'WEB_PAGE_TYPE_SEARCH';
 }
 
 export interface subscribeButton {

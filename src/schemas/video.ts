@@ -1,20 +1,35 @@
 import Joi from 'joi';
-import { longBylineTextSchema, navigationEndpointSchema, runsSchema, shortBylineTextSchema, thumbnailSchema, titleSchema } from './shared.js';
+import {
+  badgesSchema,
+  longBylineTextSchema,
+  navigationEndpointSchema,
+  ownerBadgesSchema,
+  runsSchema,
+  shortBylineTextSchema,
+  thumbnailSchema,
+} from './shared.js';
 
 export const accessibilityDataSchema = Joi.object({
-  label: Joi.string().required(),
+  label: Joi.string(),
 })
   .required()
   .meta({ className: 'AccessibilityData' });
 
+export const accessibilitySchema = Joi.object({
+  accessibilityData: accessibilityDataSchema.required(),
+}).meta({ className: 'Accessibility' });
+
+const titleSchema = Joi.object({
+  runs: runsSchema,
+  accessibility: accessibilitySchema.required(),
+}).required();
+
 export const publishedTimeTextSchema = Joi.object({
   simpleText: Joi.string().required(),
-})
-  .required()
-  .meta({ className: 'PublishedTimeText' });
+}).meta({ className: 'PublishedTimeText' });
 
 export const lengthTextSchema = Joi.object({
-  accessibility: accessibilityDataSchema,
+  accessibility: accessibilitySchema.required(),
   simpleText: Joi.string().required(),
 })
   .required()
@@ -26,18 +41,6 @@ export const viewCountTextSchema = Joi.object({
   .required()
   .meta({ className: 'ViewCountText' });
 
-export const metadataBadgeRendererSchema = Joi.object({
-  metadataBadgeRenderer: Joi.object({
-    // Add properties as needed
-  }).required(),
-})
-  .required()
-  .meta({ className: 'MetadataBadgeRenderer' });
-
-export const badgesSchema = Joi.array().items(metadataBadgeRendererSchema).required().meta({ className: 'Badges' });
-
-export const ownerBadgesSchema = Joi.array().items(metadataBadgeRendererSchema).required().meta({ className: 'OwnerBadges' });
-
 export const ownerTextSchema = Joi.object({
   runs: runsSchema,
 })
@@ -45,20 +48,18 @@ export const ownerTextSchema = Joi.object({
   .meta({ className: 'OwnerText' });
 
 export const accessibilityDataWithObjectSchema = Joi.object({
-  accessibilityData: accessibilityDataSchema,
+  accessibility: accessibilitySchema,
+  simpleText: Joi.string(),
+  runs: runsSchema,
 })
   .required()
   .meta({ className: 'AccessibilityDataWithObject' });
 
 export const menuRendererSchema = Joi.object({
   menuRenderer: Joi.object({
-    items: Joi.array().items(
-      Joi.object({
-        // Add properties as needed
-      }),
-    ),
+    items: Joi.array().items(Joi.any()),
     trackingParams: Joi.string().required(),
-    accessibility: accessibilityDataSchema,
+    accessibility: Joi.any(),
   }).required(),
 })
   .required()
@@ -68,7 +69,7 @@ export const channelThumbnailWithLinkRendererSchema = Joi.object({
   channelThumbnailWithLinkRenderer: Joi.object({
     thumbnail: thumbnailSchema.required(),
     navigationEndpoint: navigationEndpointSchema.required(),
-    accessibility: accessibilityDataSchema,
+    accessibility: Joi.any(),
   }).required(),
 })
   .required()
@@ -106,20 +107,10 @@ export const thumbnailOverlayLoadingPreviewRendererSchema = Joi.object({
   .required()
   .meta({ className: 'ThumbnailOverlayLoadingPreviewRenderer' });
 
-export const movingThumbnailDetailsSchema = Joi.object({
-  movingThumbnailDetails: Joi.object({
-    // Add properties as needed
-  }).required(),
-})
-  .required()
-  .meta({ className: 'MovingThumbnailDetails' });
-
 export const inlinePlaybackEndpointSchema = Joi.object({
   clickTrackingParams: Joi.string().required(),
   commandMetadata: Joi.object({
-    webCommandMetadata: Joi.object({
-      // Add properties as needed
-    }).required(),
+    webCommandMetadata: Joi.any().required(),
   }).required(),
   watchEndpoint: navigationEndpointSchema.required(),
 })
@@ -134,19 +125,19 @@ export const snippetSchema = Joi.object({
   .required()
   .meta({ className: 'Snippet' });
 
-export const detailedMetadataSnippetsSchema = Joi.array().items(snippetSchema).required().required().meta({ className: 'DetailedMetadataSnippets' });
+export const detailedMetadataSnippetsSchema = Joi.array().items(snippetSchema).meta({ className: 'DetailedMetadataSnippets' });
 
 export const videoSchema = Joi.object({
   videoId: Joi.string().required(),
   thumbnail: thumbnailSchema.required(),
   title: titleSchema.required(),
   longBylineText: longBylineTextSchema.required(),
-  publishedTimeText: publishedTimeTextSchema.required(),
+  publishedTimeText: publishedTimeTextSchema,
   lengthText: lengthTextSchema.required(),
   viewCountText: viewCountTextSchema.required(),
   navigationEndpoint: navigationEndpointSchema.required(),
-  badges: badgesSchema.required(),
-  ownerBadges: ownerBadgesSchema.required(),
+  badges: badgesSchema,
+  ownerBadges: ownerBadgesSchema,
   ownerText: ownerTextSchema.required(),
   shortBylineText: shortBylineTextSchema.required(),
   trackingParams: Joi.string().required(),
@@ -154,19 +145,11 @@ export const videoSchema = Joi.object({
   shortViewCountText: accessibilityDataWithObjectSchema.required(),
   menu: menuRendererSchema.required(),
   channelThumbnailSupportedRenderers: channelThumbnailWithLinkRendererSchema.required(),
-  thumbnailOverlays: Joi.array()
-    .items(
-      thumbnailOverlayTimeStatusRendererSchema,
-      thumbnailOverlayToggleButtonRendererSchema,
-      thumbnailOverlayToggleButtonRendererSchema,
-      thumbnailOverlayNowPlayingRendererSchema,
-      thumbnailOverlayLoadingPreviewRendererSchema,
-    )
-    .required(),
+  thumbnailOverlays: Joi.array().items(Joi.any()).required(),
   richThumbnail: Joi.object({
-    movingThumbnailRenderer: movingThumbnailDetailsSchema.required(),
-  }).required(),
-  detailedMetadataSnippets: detailedMetadataSnippetsSchema.required(),
+    movingThumbnailRenderer: Joi.any().required(),
+  }),
+  detailedMetadataSnippets: detailedMetadataSnippetsSchema,
   inlinePlaybackEndpoint: inlinePlaybackEndpointSchema.required(),
   searchVideoResultEntityKey: Joi.string().required(),
 })
