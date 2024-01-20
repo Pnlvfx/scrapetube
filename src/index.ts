@@ -1,3 +1,4 @@
+import type { Client } from './types/index.js';
 import coraline from 'coraline';
 import { results_type_map, sort_by_map } from './config.js';
 
@@ -34,16 +35,16 @@ const getVideos = async function* (url: string, selector: string, limit: number,
   let quit = false;
   let isFirst = true;
   let count = 0;
-  let apiKey;
-  let client;
+  let apiKey: string | undefined;
+  let client: Client | undefined;
   while (true) {
     if (isFirst) {
       console.log('scrapetube: using client!');
       const html = await getInitialData(url);
-      client = JSON.parse(getJsonFromHtml(html, 'INNERTUBE_CONTEXT', 2, '"}},') + '"}}');
+      client = JSON.parse(getJsonFromHtml(html, 'INNERTUBE_CONTEXT', 2, '"}},') + '"}}') as Client;
       apiKey = getJsonFromHtml(html, 'innertubeApiKey', 3);
       headers['X-Youtube-Client-Name'] = '1';
-      headers['X-Youtube-Client-Version'] = client['clientVersion'];
+      headers['X-Youtube-Client-Version'] = client.client.clientVersion;
       data = JSON.parse(getJsonFromHtml(html, 'var ytInitialData = ', 0, '};') + '}');
       nextData = getNextData(data);
       isFirst = false;
@@ -132,7 +133,7 @@ const searchDict = function* (partial: unknown, searchKey: string) {
 
 export default scrapetube;
 
-// // const videos = scrapetube.search('Reuters', 2, 0, 'upload_date', 'channel');
-// // for await (const video of videos) {
-// //   console.log(video);
-// // }
+// const videos = scrapetube.search('Reuters', 2, 0, 'upload_date', 'channel');
+// for await (const video of videos) {
+//   // console.log(video);
+// }
