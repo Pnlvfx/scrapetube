@@ -2,7 +2,8 @@ import type { Client } from './interfaces/client.js';
 import coraline from 'coraline';
 import { results_type_map, sort_by_map } from './config.js';
 import { Video } from './interfaces/video.js';
-import { videoSchema } from './schemas/video.js';
+import { Channel } from './interfaces/channel.js';
+import { validate } from './validate.js';
 
 const api_endpoint = 'https://www.youtube.com/youtubei/v1/search';
 
@@ -11,24 +12,33 @@ const headers: HeadersInit = {
   Cookie: 'CONSENT=YES+cb',
 };
 
+export type YTResult = {
+  video: Video;
+  channel: Channel;
+  playlist: unknown;
+  movie: unknown;
+};
+
 const scrapetube = {
-  search: async function* (
+  search: async function* <T extends keyof YTResult>(
     query: string,
     limit = 5,
     sleep = 1,
-    sortBy: keyof typeof sort_by_map = 'relevance',
-    resultsType: keyof typeof results_type_map = 'video',
-  ): AsyncGenerator<Video> {
+    sortBy: keyof typeof sort_by_map,
+    resultsType: T,
+  ): AsyncGenerator<YTResult[T]> {
     const [saha, selector] = results_type_map[resultsType];
     if (!saha || !selector) throw new Error('Invalid parameters provided');
     const param_string = `CA${sort_by_map[sortBy]}SAhA${saha}`;
     const url = `https://www.youtube.com/results?search_query=${query}&sp=${param_string}`;
     const videos = getVideos(url, selector, limit, sleep);
     for await (const video of videos) {
+      if (process.env['NODE_ENV'] !== 'production') {
+        validate(resultsType, video);
+      }
       yield video;
     }
   },
-  validate: videoSchema.validate,
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -139,4 +149,10 @@ export default scrapetube;
 // const videos = scrapetube.search('Reuters', 2, 0, 'upload_date', 'channel');
 // for await (const video of videos) {
 //   videoSchema.validate(video);
+// }
+
+// const videos = scrapetube.search('Capo Plaza', 10, 0, 'relevance', 'video');
+// for await (const video of videos) {
+//   console.log(video);
+//   break;
 // }

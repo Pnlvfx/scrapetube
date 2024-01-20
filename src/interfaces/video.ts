@@ -3,131 +3,116 @@
  * Do not modify this file manually
  */
 
+import { NavigationEndpoint, Thumbnail, Runs, LongBylineText, ShortBylineText, Title } from './index.js';
+
+export interface AccessibilityData {
+  label: string;
+}
+
+export interface AccessibilityDataWithObject {
+  accessibilityData: AccessibilityData;
+}
+
+export type Badges = MetadataBadgeRenderer[];
+
+export interface ChannelThumbnailWithLinkRenderer {
+  channelThumbnailWithLinkRenderer: {
+    accessibility: AccessibilityData;
+    navigationEndpoint: NavigationEndpoint;
+    thumbnail: Thumbnail;
+  };
+}
+
+export type DetailedMetadataSnippets = Snippet[];
+
+export interface InlinePlaybackEndpoint {
+  clickTrackingParams: string;
+  commandMetadata: {
+    webCommandMetadata: Record<string, never>;
+  };
+  watchEndpoint: NavigationEndpoint;
+}
+
+export interface LengthText {
+  accessibility: AccessibilityData;
+  simpleText: string;
+}
+
+export interface MenuRenderer {
+  menuRenderer: {
+    accessibility: AccessibilityData;
+    items?: Record<string, never>[];
+    trackingParams: string;
+  };
+}
+
+export interface MetadataBadgeRenderer {
+  metadataBadgeRenderer: Record<string, never>;
+}
+
+export interface MovingThumbnailDetails {
+  movingThumbnailDetails: Record<string, never>;
+}
+
+export type OwnerBadges = MetadataBadgeRenderer[];
+
+export interface OwnerText {
+  runs: Runs;
+}
+
+export interface PublishedTimeText {
+  simpleText: string;
+}
+
+export interface Snippet {
+  maxOneLine?: boolean;
+  snippetHoverText: AccessibilityDataWithObject;
+  snippetText: AccessibilityDataWithObject;
+}
+
+export interface ThumbnailOverlayLoadingPreviewRenderer {
+  thumbnailOverlayLoadingPreviewRenderer: Record<string, never>;
+}
+
+export interface ThumbnailOverlayNowPlayingRenderer {
+  thumbnailOverlayNowPlayingRenderer: Record<string, never>;
+}
+
+export interface ThumbnailOverlayTimeStatusRenderer {
+  thumbnailOverlayTimeStatusRenderer: Record<string, never>;
+}
+
+export interface ThumbnailOverlayToggleButtonRenderer {
+  thumbnailOverlayToggleButtonRenderer: Record<string, never>;
+}
+
 export interface Video {
-  channelId: string;
-  descriptionSnippet: {
-    runs: {
-      text: string;
-    }[];
+  badges: Badges;
+  channelThumbnailSupportedRenderers: ChannelThumbnailWithLinkRenderer;
+  detailedMetadataSnippets: DetailedMetadataSnippets;
+  inlinePlaybackEndpoint: InlinePlaybackEndpoint;
+  lengthText: LengthText;
+  longBylineText: LongBylineText;
+  menu: MenuRenderer;
+  navigationEndpoint: NavigationEndpoint;
+  ownerBadges: OwnerBadges;
+  ownerText: OwnerText;
+  publishedTimeText: PublishedTimeText;
+  richThumbnail: {
+    movingThumbnailRenderer: MovingThumbnailDetails;
   };
-  longBylineText: {
-    runs: {
-      navigationEndpoint?: {
-        browseEndpoint: {
-          browseId: string;
-          canonicalBaseUrl: string;
-        };
-        clickTrackingParams: string;
-        commandMetadata: {
-          webCommandMetadata: {
-            apiUrl: string;
-            rootVe: number;
-            url: string;
-            webPageType: 'WEB_PAGE_TYPE_CHANNEL';
-          };
-        };
-      };
-      text: string;
-    }[];
-  };
-  navigationEndpoint: {
-    browseEndpoint: {
-      browseId: string;
-      canonicalBaseUrl: string;
-    };
-    clickTrackingParams: string;
-    commandMetadata: {
-      webCommandMetadata: {
-        apiUrl: string;
-        rootVe: number;
-        url: string;
-        webPageType: 'WEB_PAGE_TYPE_CHANNEL';
-      };
-    };
-  };
-  shortBylineText: {
-    runs: {
-      navigationEndpoint?: {
-        browseEndpoint: {
-          browseId: string;
-          canonicalBaseUrl: string;
-        };
-        clickTrackingParams: string;
-        commandMetadata: {
-          webCommandMetadata: {
-            apiUrl: string;
-            rootVe: number;
-            url: string;
-            webPageType: 'WEB_PAGE_TYPE_CHANNEL';
-          };
-        };
-      };
-      text: string;
-    }[];
-  };
-  subscribeButton: {
-    buttonRenderer: {
-      isDisabled: boolean;
-      navigationEndpoint: {
-        clickTrackingParams: string;
-        commandMetadata: {
-          webCommandMetadata: {
-            rootVe: number;
-            url: string;
-            webPageType: 'WEB_PAGE_TYPE_UNKNOWN';
-          };
-        };
-        signInEndpoint: {
-          continueAction: string;
-          nextEndpoint: {
-            clickTrackingParams: string;
-            commandMetadata: {
-              webCommandMetadata: {
-                rootVe: number;
-                url: string;
-                webPageType: 'WEB_PAGE_TYPE_SEARCH';
-              };
-            };
-            searchEndpoint: {
-              params: string;
-              query: string;
-            };
-          };
-        };
-      };
-      size: 'SIZE_DEFAULT';
-      style: 'STYLE_DESTRUCTIVE';
-      text: {
-        runs: {
-          text: string;
-        }[];
-      };
-      trackingParams: string;
-    };
-  };
-  subscriberCountText: {
-    simpleText: string;
-  };
-  subscriptionButton: {
-    subscribed: boolean;
-  };
-  thumbnail: {
-    thumbnails: {
-      height: number;
-      url: string;
-      width: number;
-    }[];
-  };
-  title: {
-    simpleText: string;
-  };
+  searchVideoResultEntityKey: string;
+  shortBylineText: ShortBylineText;
+  shortViewCountText: AccessibilityDataWithObject;
+  showActionMenu: boolean;
+  thumbnail: Thumbnail;
+  thumbnailOverlays: ThumbnailOverlayTimeStatusRenderer[];
+  title: Title;
   trackingParams: string;
-  videoCountText: {
-    accessibility: {
-      accessibilityData: {
-        label: string;
-      };
-    };
-    simpleText: string;
-  };
+  videoId: string;
+  viewCountText: ViewCountText;
+}
+
+export interface ViewCountText {
+  simpleText: string;
 }
