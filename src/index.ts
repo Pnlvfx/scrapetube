@@ -18,8 +18,8 @@ export default scrapetube;
 //   console.log(video.videoId);
 // }
 
-const videos = scrapetube.getChannel({ channelUsername: 'Reuters', limit: 5 });
-for await (const video of videos) {
-  console.log(video);
-  break;
-}
+// const videos = scrapetube.getChannel({ channelUsername: 'Reuters', limit: 5 });
+// for await (const video of videos) {
+//   console.log(video);
+//   break;
+// }
