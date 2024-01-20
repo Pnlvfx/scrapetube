@@ -27,7 +27,7 @@
     "dev": "tsc -w --outDir dist/esm & node --watch ./dist/esm/index.js",
     "start": "node .",
     "lint": "eslint ./src",
-    "build": "npm run types && rimraf dist && npm run lint && npm run build:esm && npm run build:cjs && npm run generate:package.json",
+    "build": "rimraf dist && npm run lint && npm run build:esm && npm run build:cjs && npm run generate:package.json",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --moduleResolution node --outDir dist/cjs",
     "prepare": "npm run build",
