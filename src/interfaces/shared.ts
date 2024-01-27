@@ -48,6 +48,7 @@ export interface NavigationEndpoint {
     value: string;
   }[];
   playerParams?: string;
+  reelWatchEndpoint?: unknown;
   signInEndpoint?: SignInEndpoint;
   videoId?: string;
   watchEndpoint?: {

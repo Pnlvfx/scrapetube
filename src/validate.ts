@@ -11,10 +11,10 @@ export const validate = <T extends keyof YTResult>(type: T, result: YTResult[T])
     validation = channelSchema.validate(result);
   }
   if (validation?.error) {
-    coraline.log(validation.error);
+    coraline.log(validation.error.details);
     throw new Error('Validation error');
   } else if (validation?.warning) {
-    coraline.log(validation.warning);
+    coraline.log(validation.warning.details);
     throw new Error('Validation warning');
   }
 };

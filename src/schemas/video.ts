@@ -113,9 +113,7 @@ export const inlinePlaybackEndpointSchema = Joi.object({
     webCommandMetadata: Joi.any().required(),
   }).required(),
   watchEndpoint: navigationEndpointSchema.required(),
-})
-  .required()
-  .meta({ className: 'InlinePlaybackEndpoint' });
+}).meta({ className: 'InlinePlaybackEndpoint' });
 
 export const snippetSchema = Joi.object({
   snippetText: accessibilityDataWithObjectSchema,
@@ -150,7 +148,7 @@ export const videoSchema = Joi.object({
     movingThumbnailRenderer: Joi.any().required(),
   }),
   detailedMetadataSnippets: detailedMetadataSnippetsSchema,
-  inlinePlaybackEndpoint: inlinePlaybackEndpointSchema.required(),
+  inlinePlaybackEndpoint: inlinePlaybackEndpointSchema,
   searchVideoResultEntityKey: Joi.string().required(),
 })
   .required()
