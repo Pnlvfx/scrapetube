@@ -158,6 +158,7 @@ export const metadataBadgeRendererSchema = Joi.object({
     tooltip: Joi.string(),
     trackingParams: Joi.string().required(),
     accessibilityData: Joi.object({ label: Joi.string() }),
+    groups: Joi.array().items(Joi.string()),
     label: Joi.string(),
   }).required(),
 })
