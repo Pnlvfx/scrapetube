@@ -1,6 +1,8 @@
 import { search } from './search.js';
 import { getChannel } from './channel.js';
 
+// CHECK THE README TO SEE HOW TO USE THE SEARCH
+
 const scrapetube = {
   search,
   getChannel,
