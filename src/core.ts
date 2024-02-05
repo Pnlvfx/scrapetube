@@ -33,7 +33,6 @@ export const getVideos = async function* (url: string, { api_endpoint, limit, se
   let client: Client | undefined;
   while (true) {
     if (isFirst) {
-      console.log('scrapetube: using client!');
       const html = await getInitialData(url);
       client = JSON.parse(getJsonFromHtml(html, 'INNERTUBE_CONTEXT', 2, '"}},') + '"}}') as Client;
       apiKey = getJsonFromHtml(html, 'innertubeApiKey', 3);
@@ -44,9 +43,7 @@ export const getVideos = async function* (url: string, { api_endpoint, limit, se
       isFirst = false;
       if (sortBy && sortBy !== 'newest') continue;
     } else {
-      console.log('scrapetube: using server!');
       if (!apiKey || !nextData || !client) throw new Error('Internal error: Incorrect loop, please report it to the github repository issue!');
-      console.log({ nextData });
       data = await getAjaxData(api_endpoint, apiKey, nextData, client);
       nextData = getNextData(data);
     }
@@ -101,7 +98,6 @@ const getNextData = (data: unknown, sortBy?: ChannelSort) => {
   let endpoint;
   // eslint-disable-next-line unicorn/prefer-ternary
   if (sortBy && sortBy !== 'newest') {
-    console.log({ value: searchDict(data, 'feedFilterChipBarRenderer').next() });
     endpoint = searchDict(data, 'feedFilterChipBarRenderer').next().value['contents'][sort_by_map[sortBy]]['chipCloudChipRenderer'][
       'navigationEndpoint'
     ];

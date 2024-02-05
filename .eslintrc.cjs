@@ -59,6 +59,7 @@ module.exports = {
     'no-multiple-empty-lines': 'error',
     'no-unsafe-negation': 'error',
     'prefer-const': 'error',
+    'no-console': 'error',
 
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
