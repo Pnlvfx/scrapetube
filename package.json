@@ -44,9 +44,9 @@
     "joi": "^17.12.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.12",
-    "@typescript-eslint/eslint-plugin": "^6.20.0",
-    "@typescript-eslint/parser": "^6.20.0",
+    "@types/node": "^20.11.16",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -55,7 +55,7 @@
     "eslint-plugin-sonarjs": "^0.23.0",
     "eslint-plugin-unicorn": "^50.0.1",
     "joi-to-typescript": "^4.12.0",
-    "prettier": "^3.2.4",
+    "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
