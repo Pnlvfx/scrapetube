@@ -65,7 +65,6 @@ const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: Recor
     context: { clickTracking: nextData['click_params'], client },
     continuation: nextData['token'],
   };
-  coraline.log({ body });
   const query = new URLSearchParams({ key: apiKey });
   const res = await fetch(api_endpoint + '?' + query.toString(), {
     method: 'POST',

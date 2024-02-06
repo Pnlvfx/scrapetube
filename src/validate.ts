@@ -1,4 +1,3 @@
-import coraline from 'coraline';
 import { channelSchema } from './schemas/channel.js';
 import { videoSchema } from './schemas/video.js';
 import { YTResult } from './search.js';
@@ -11,10 +10,12 @@ export const validate = <T extends keyof YTResult>(type: T, result: YTResult[T])
     validation = channelSchema.validate(result);
   }
   if (validation?.error) {
-    coraline.log(validation.error.details);
+    // eslint-disable-next-line no-console
+    console.log(validation.error.details);
     throw new Error('Validation error');
   } else if (validation?.warning) {
-    coraline.log(validation.warning.details);
+    // eslint-disable-next-line no-console
+    console.log(validation.warning.details);
     throw new Error('Validation warning');
   }
 };
