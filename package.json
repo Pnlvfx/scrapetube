@@ -2,7 +2,7 @@
   "name": "scrapetube",
   "description": "Node package to get youtube search api without keys.",
   "version": "2024.1.19",
-  "main": "./dist/cjs/index.js",
+  "main": "./dist/esm/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "engines": {
