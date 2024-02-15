@@ -10,8 +10,8 @@ interface VideoOpts {
 }
 
 const headers: HeadersInit = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36',
-  Cookie: 'CONSENT=YES+cb',
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+  'Accept-Language': 'en',
 };
 
 export type ChannelSort = keyof typeof sort_by_map;
@@ -23,21 +23,21 @@ const sort_by_map = {
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const getVideos = async function* (url: string, { api_endpoint, limit, selector, sleep, sortBy }: VideoOpts) {
+export const getVideos = async function* (url: string, { api_endpoint, selector, limit, sleep, sortBy }: VideoOpts) {
+  let isFirst = true;
+  let quit = false;
+  let count = 0;
   let data;
   let nextData;
-  let quit = false;
-  let isFirst = true;
-  let count = 0;
   let apiKey: string | undefined;
-  let client: Client | undefined;
+  let client: Client['client'] | undefined;
   while (true) {
     if (isFirst) {
       const html = await getInitialData(url);
-      client = JSON.parse(getJsonFromHtml(html, 'INNERTUBE_CONTEXT', 2, '"}},') + '"}}') as Client;
+      client = (JSON.parse(getJsonFromHtml(html, 'INNERTUBE_CONTEXT', 2, '"}},') + '"}}') as Client).client;
       apiKey = getJsonFromHtml(html, 'innertubeApiKey', 3);
       headers['X-Youtube-Client-Name'] = '1';
-      headers['X-Youtube-Client-Version'] = client.client.clientVersion;
+      headers['X-Youtube-Client-Version'] = client.clientVersion;
       data = JSON.parse(getJsonFromHtml(html, 'var ytInitialData = ', 0, '};') + '}');
       nextData = getNextData(data, sortBy);
       isFirst = false;
@@ -60,7 +60,7 @@ export const getVideos = async function* (url: string, { api_endpoint, limit, se
   }
 };
 
-const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: Record<string, unknown>, client: Client) => {
+const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: Record<string, unknown>, client: Client['client']) => {
   const body = {
     context: { clickTracking: nextData['click_params'], client },
     continuation: nextData['token'],
@@ -79,7 +79,9 @@ const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: Recor
 };
 
 const getInitialData = async (url: string) => {
-  const res = await fetch(url, {
+  headers['Cookie'] = 'CONSENT=YES+cb;';
+  const query = new URLSearchParams({ ucbcb: '1' });
+  const res = await fetch(url + '?' + query.toString(), {
     method: 'GET',
     headers,
   });
@@ -104,8 +106,10 @@ const getNextData = (data: unknown, sortBy?: ChannelSort) => {
     endpoint = searchDict(data, 'continuationEndpoint').next();
   }
   if (!endpoint) throw new Error('Missing endpoint');
+  const tokenData = endpoint.value['continuationCommand'];
+  if (!tokenData) throw new Error('Missing next data token');
   return {
-    token: endpoint.value['continuationCommand']['token'],
+    token: tokenData['token'],
     click_params: { clickTrackingParams: endpoint.value['clickTrackingParams'] },
   };
 };

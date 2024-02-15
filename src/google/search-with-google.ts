@@ -25,7 +25,11 @@ const searchList = async (params?: Params$Resource$Search$List): Promise<Schema$
 };
 
 export const searchWithGoogle = async (q: string): Promise<string> => {
-  if (!process.env['YOUTUBE_API_KEY']) throw new Error('You need to get a google key and enable youtubev3 to use this function.');
+  if (!process.env['YOUTUBE_API_KEY']) {
+    throw new Error(
+      'You need to get a google key and enable youtubev3 to use this function, you can use the search function which does not require authentication.',
+    );
+  }
   const list = await searchList({
     key: process.env['YOUTUBE_API_KEY'],
     part: ['snippet, id'],

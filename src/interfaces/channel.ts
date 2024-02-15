@@ -3,25 +3,14 @@
  * Do not modify this file manually
  */
 
-import {
-  DescriptionSnippet,
-  LongBylineText,
-  NavigationEndpoint,
-  OwnerBadges,
-  ShortBylineText,
-  subscribeButton,
-  SubscriberCountText,
-  SubscriptionButton,
-  Thumbnail,
-  VideoCountText,
-} from './index.js';
+import { DescriptionSnippet, LongBylineText, NavigationEndpoint, Badges, ShortBylineText, SubscriberCountText, Thumbnail, Runs } from './index.js';
 
 export interface Channel {
   channelId: string;
   descriptionSnippet?: DescriptionSnippet;
   longBylineText: LongBylineText;
   navigationEndpoint: NavigationEndpoint;
-  ownerBadges?: OwnerBadges;
+  ownerBadges?: Badges;
   shortBylineText: ShortBylineText;
   subscribeButton: subscribeButton;
   subscriberCountText?: SubscriberCountText;
@@ -36,4 +25,31 @@ export interface ChannelTitle {
   simpleText: string;
 }
 
-export type ownerBadges = unknown[];
+export interface SubscriptionButton {
+  subscribed: boolean;
+}
+
+export interface VideoCountText {
+  accessibility?: {
+    accessibilityData: {
+      label: string;
+    };
+  };
+  runs?: Runs;
+  simpleText?: string;
+}
+
+export interface subscribeButton {
+  buttonRenderer: {
+    isDisabled: boolean;
+    navigationEndpoint: NavigationEndpoint;
+    size: 'SIZE_DEFAULT';
+    style: 'STYLE_DESTRUCTIVE';
+    text: {
+      runs: {
+        text: string;
+      }[];
+    };
+    trackingParams: string;
+  };
+}

@@ -7,9 +7,7 @@ export const webCommandMetadataSchema = Joi.object({
     .required(),
   rootVe: Joi.number().required(),
   apiUrl: Joi.string(),
-})
-  .required()
-  .meta({ className: 'WebCommandMetadata' });
+}).meta({ className: 'WebCommandMetadata' });
 
 export const browseEndpointSchema = Joi.object({
   browseId: Joi.string().required(),
@@ -21,13 +19,13 @@ export const signInEndpointSchema = Joi.object({
     clickTrackingParams: Joi.string().required(),
     commandMetadata: Joi.object({
       webCommandMetadata: webCommandMetadataSchema.required(),
-    }).required(),
-    searchEndpoint: Joi.object({ query: Joi.string().required(), params: Joi.string().required() }).required(),
-  }).required(),
+    }),
+    searchEndpoint: Joi.object({ query: Joi.string().required(), params: Joi.string() }),
+  }),
   continueAction: Joi.string().required(),
 }).meta({ className: 'SignInEndpoint' });
 
-export const watchEndpoint = {
+const watchEndpoint = {
   // for search video
   videoId: Joi.string(),
   params: Joi.string(),
@@ -64,9 +62,7 @@ export const thumbnailSchema = Joi.object({
       }),
     )
     .required(),
-})
-  .required()
-  .meta({ className: 'Thumbnail' });
+}).meta({ className: 'Thumbnail' });
 
 export const runsSchema = Joi.array()
   .items(
@@ -91,52 +87,11 @@ export const shortBylineTextSchema = Joi.object({
       }),
     )
     .required(),
-})
-  .required()
-  .meta({ className: 'ShortBylineText' });
-
-export const videoCountTextSchema = Joi.object({
-  accessibility: Joi.object({
-    accessibilityData: Joi.object({
-      label: Joi.string().required(),
-    }).required(),
-  }),
-  simpleText: Joi.string(),
-  runs: runsSchema,
-})
-  .required()
-  .meta({ className: 'VideoCountText' });
-
-export const subscriptionButtonSchema = Joi.object({
-  subscribed: Joi.boolean().required(),
-})
-  .required()
-  .meta({ className: 'SubscriptionButton' });
+}).meta({ className: 'ShortBylineText' });
 
 export const subscriberCountTextSchema = Joi.object({
   simpleText: Joi.string().required(),
 }).meta({ className: 'SubscriberCountText' });
-
-export const subscribeButtonSchema = Joi.object({
-  buttonRenderer: Joi.object({
-    style: Joi.string().valid('STYLE_DESTRUCTIVE').required(),
-    size: Joi.string().valid('SIZE_DEFAULT').required(),
-    isDisabled: Joi.boolean().required(),
-    text: Joi.object({
-      runs: Joi.array()
-        .items(
-          Joi.object({
-            text: Joi.string().required(),
-          }),
-        )
-        .required(),
-    }).required(),
-    navigationEndpoint: navigationEndpointSchema.required(),
-    trackingParams: Joi.string().required(),
-  }).required(),
-})
-  .required()
-  .meta({ className: 'subscribeButton' });
 
 export const longBylineTextSchema = Joi.object({
   runs: Joi.array()
@@ -147,9 +102,7 @@ export const longBylineTextSchema = Joi.object({
       }),
     )
     .required(),
-})
-  .required()
-  .meta({ className: 'LongBylineText' });
+}).meta({ className: 'LongBylineText' });
 
 export const metadataBadgeRendererSchema = Joi.object({
   metadataBadgeRenderer: Joi.object({
@@ -161,10 +114,6 @@ export const metadataBadgeRendererSchema = Joi.object({
     groups: Joi.array().items(Joi.string()),
     label: Joi.string(),
   }).required(),
-})
-  .required()
-  .meta({ className: 'MetadataBadgeRenderer' });
+}).meta({ className: 'MetadataBadgeRenderer' });
 
-export const badgesSchema = Joi.array().items(metadataBadgeRendererSchema).meta({ className: 'Badges' });
-
-export const ownerBadgesSchema = Joi.array().items(metadataBadgeRendererSchema).meta({ className: 'OwnerBadges' });
+export const badgesSchema = Joi.array().items(metadataBadgeRendererSchema.required()).meta({ className: 'Badges' });
