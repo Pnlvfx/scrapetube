@@ -34,7 +34,7 @@ export type YTResult = {
 export const search = async function* <T extends keyof YTResult>(
   query: string,
   type: T,
-  { limit = 10, sleep = 1, sortBy = 'relevance' }: SearchOpts = {},
+  { limit = 10, sleep = 1000, sortBy = 'relevance' }: SearchOpts = {},
 ): AsyncGenerator<YTResult[T]> {
   const [saha, selector] = results_type_map[type];
   if (!saha || !selector) throw new Error('Invalid parameters provided');

@@ -39,7 +39,7 @@ export const getChannel = async function* ({
   channelUsername,
   contentType = 'videos',
   limit = 5,
-  sleep = 1,
+  sleep = 1000,
   sortBy = 'newest',
 }: ChannelOpts) {
   let baseUrl;
