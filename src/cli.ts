@@ -11,7 +11,8 @@ const test = async (q?: string) => {
     case '1': {
       const videos = scrapetube.search('Reuters', 'channel', { limit: 5 });
       for await (const video of videos) {
-        console.log(video);
+        coraline.log(video);
+        break;
       }
       break;
     }
@@ -26,10 +27,9 @@ const test = async (q?: string) => {
     case '3': {
       const latestVideos = scrapetube.getChannel({ channelUsername: 'Reuters' });
       for await (const video of latestVideos) {
-        console.log(video);
+        coraline.log(video);
         break;
       }
-
       break;
     }
     // No default
