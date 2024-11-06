@@ -3,9 +3,9 @@
  * Do not modify this file manually
  */
 
-import { CommandMetadata } from './shared';
-import { Channel } from './channel';
-import { Video } from './video';
+import { CommandMetadata } from './shared.js';
+import { Channel } from './channel.js';
+import { Video } from './video.js';
 
 export interface InitialData {
   contents: {

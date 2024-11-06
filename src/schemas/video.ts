@@ -46,11 +46,17 @@ export const accessibilityDataWithObjectSchema = Joi.object({
   runs: runsSchema,
 }).meta({ className: 'AccessibilityDataWithObject' });
 
+/** @TODO Fill in this objects. */
+const menuSchema = undefined;
+const accessibility = undefined;
+const thumbnailOverlay = undefined;
+const movingThumbnailRenderer = undefined;
+
 export const menuRendererSchema = Joi.object({
   menuRenderer: Joi.object({
-    items: Joi.array().items(Joi.any()),
+    items: Joi.array().items(Joi.object(menuSchema)),
     trackingParams: Joi.string().required(),
-    accessibility: Joi.any(),
+    accessibility: Joi.object(accessibility),
   }).required(),
 }).meta({ className: 'MenuRenderer' });
 
@@ -58,7 +64,7 @@ export const channelThumbnailWithLinkRendererSchema = Joi.object({
   channelThumbnailWithLinkRenderer: Joi.object({
     thumbnail: thumbnailSchema.required(),
     navigationEndpoint: navigationEndpointSchema.required(),
-    accessibility: Joi.any(),
+    accessibility: Joi.object(accessibility),
   }).required(),
 }).meta({ className: 'ChannelThumbnailWithLinkRenderer' });
 
@@ -103,9 +109,9 @@ export const videoSchema = Joi.object({
   shortViewCountText: accessibilityDataWithObjectSchema.required(),
   menu: menuRendererSchema.required(),
   channelThumbnailSupportedRenderers: channelThumbnailWithLinkRendererSchema.required(),
-  thumbnailOverlays: Joi.array().items(Joi.any()).required(),
+  thumbnailOverlays: Joi.array().items(Joi.object(thumbnailOverlay)).required(),
   richThumbnail: Joi.object({
-    movingThumbnailRenderer: Joi.any().required(),
+    movingThumbnailRenderer: Joi.object(movingThumbnailRenderer).required(),
   }),
   detailedMetadataSnippets: detailedMetadataSnippetsSchema,
   expandableMetadata: Joi.object(),

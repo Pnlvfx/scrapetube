@@ -3,7 +3,7 @@
  * Do not modify this file manually
  */
 
-import { Runs, NavigationEndpoint, Thumbnail, CommandMetadata, WebCommandMetadata, Badges, LongBylineText, ShortBylineText } from './shared';
+import { Runs, NavigationEndpoint, Thumbnail, CommandMetadata, WebCommandMetadata, Badges, LongBylineText, ShortBylineText } from './shared.js';
 
 export interface Accessibility {
   accessibilityData: AccessibilityData;
@@ -32,7 +32,7 @@ export interface AvatarViewModel {
 
 export interface ChannelThumbnailWithLinkRenderer {
   channelThumbnailWithLinkRenderer: {
-    accessibility?: any;
+    accessibility?: object;
     navigationEndpoint: NavigationEndpoint;
     thumbnail: Thumbnail;
   };
@@ -53,8 +53,8 @@ export interface LengthText {
 
 export interface MenuRenderer {
   menuRenderer: {
-    accessibility?: any;
-    items?: any[];
+    accessibility?: object;
+    items?: object[];
     trackingParams: string;
   };
 }
@@ -121,14 +121,14 @@ export interface Video {
   ownerText: OwnerText;
   publishedTimeText?: PublishedTimeText;
   richThumbnail?: {
-    movingThumbnailRenderer: any;
+    movingThumbnailRenderer: object;
   };
   searchVideoResultEntityKey: string;
   shortBylineText: ShortBylineText;
   shortViewCountText: AccessibilityDataWithObject;
   showActionMenu: boolean;
   thumbnail: Thumbnail;
-  thumbnailOverlays: any[];
+  thumbnailOverlays: object[];
   title: Title;
   trackingParams: string;
   videoId: string;
