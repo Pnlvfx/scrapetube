@@ -37,6 +37,7 @@ export interface InitialData {
                 };
                 channelRenderer?: Channel;
                 lockupViewModel?: object;
+                playlistRenderer?: object;
                 radioRenderer?: object;
                 reelShelfRenderer?: object;
                 shelfRenderer?: object;
@@ -64,6 +65,9 @@ export interface InitialData {
   };
   onResponseReceivedCommands?: {
     adsControlFlowOpportunityReceivedCommand: {
+      adSlotAndLayoutMetadata?: object[];
+      enablePacfLoggingWeb?: boolean;
+      isInitialLoad?: boolean;
       opportunityType: string;
     };
     clickTrackingParams: string;

@@ -1,6 +1,5 @@
 import type { Video } from './interfaces/video.js';
 import type { Channel } from './interfaces/channel.js';
-import { validate } from './validate.js';
 import { getVideos } from './core.js';
 
 const api_endpoint = 'https://www.youtube.com/youtubei/v1/search';
@@ -42,11 +41,8 @@ export const search = async function* <T extends keyof YTResult>(
   const [saha, selector] = results_type_map[type];
   const param_string = `CA${sort_by_map[sortBy]}SAhA${saha}`;
   const url = `https://www.youtube.com/results?search_query=${query}&sp=${param_string}`;
-  const videos = getVideos<T>(url, { selectorList: 'contents', selectorItem: selector, limit, sleep, api_endpoint });
+  const videos = getVideos<T, 'contents'>(url, { selectorList: 'contents', selectorItem: selector, limit, sleep, api_endpoint });
   for await (const video of videos) {
-    if (process.env['NODE_ENV'] !== 'production') {
-      await validate(type, video);
-    }
     yield video;
   }
 };

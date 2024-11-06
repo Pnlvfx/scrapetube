@@ -17,11 +17,12 @@ const test = async (q?: string) => {
       break;
     }
     case '2': {
-      const videos = scrapetube.search('Lei', 'video', { limit: 10 });
+      console.time('search');
+      const videos = scrapetube.search('Shiva', 'video', { limit: 100 });
       for await (const video of videos) {
         console.log(video.videoId);
       }
-
+      console.timeEnd('search');
       break;
     }
     case '3': {

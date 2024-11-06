@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/no-redundant-optional */
-import { ChannelSort, getVideos } from './core.js';
+import { type ChannelSort, getVideos } from './core.js';
 
 const typePropertyMap = {
   videos: 'videoRenderer',
@@ -54,7 +54,7 @@ export const getChannel = async function* ({
     baseUrl = `https://www.youtube.com/@${channelUsername}`;
   } else throw new Error('You need to provide one between channelUrl, channelId or channelUsername option.');
   const url = `${baseUrl}/${contentType}?view=0&flow=grid`;
-  const videos = getVideos<'channel'>(url, {
+  const videos = getVideos<'channel', 'contents'>(url, {
     api_endpoint,
     selectorList: 'contents',
     selectorItem: typePropertyMap[contentType],

@@ -58,6 +58,8 @@ const aboutTheseResultsButton = undefined;
 const topbar = undefined;
 const lockupViewModel = undefined;
 const adSlotAndLayoutMetadata = undefined;
+// move to a separate file
+const playlistSchema = undefined;
 
 const contentsRender = {
   adSlotRenderer: Joi.object(adSlotRenderer),
@@ -67,6 +69,7 @@ const contentsRender = {
   shelfRenderer: Joi.object(shelfRenderer),
   lockupViewModel: Joi.object(lockupViewModel),
   channelRenderer: channelSchema,
+  playlistRenderer: Joi.object(playlistSchema),
 };
 
 export const initialDataSchema = Joi.object({
