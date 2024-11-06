@@ -10,7 +10,8 @@ type SelectorKeys = SearchSelector | ChannelSelector;
 
 interface VideoOpts {
   api_endpoint: string;
-  selector: SelectorKeys;
+  selectorList: 'contents';
+  selectorItem: SelectorKeys;
   limit?: number;
   sleep: number;
   sortBy?: ChannelSort;
@@ -34,7 +35,7 @@ const sort_by_map = {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const getVideos = async function* <T extends keyof YTResult>(
   url: string,
-  { api_endpoint, selector, limit, sleep, sortBy }: VideoOpts,
+  { api_endpoint, selectorList, selectorItem, limit, sleep, sortBy }: VideoOpts,
 ): AsyncGenerator<YTResult[T]> {
   /** Is first has been replaced by checking if there is data as it's the same thing but simpler. */
   let quit = false;
@@ -57,12 +58,13 @@ export const getVideos = async function* <T extends keyof YTResult>(
       apiKey = getJsonFromHtml(html, 'innertubeApiKey', 3);
       headers['X-Youtube-Client-Name'] = '1';
       headers['X-Youtube-Client-Version'] = client.clientVersion;
-      data = JSON.parse(getJsonFromHtml(html, 'var ytInitialData = ', 0, '};') + '}') as InitialData;
-      await initialDataSchema.validateAsync(data);
+      const response = JSON.parse(getJsonFromHtml(html, 'var ytInitialData = ', 0, '};') + '}') as InitialData;
+      await initialDataSchema.validateAsync(response);
+      data = searchDict(response, selectorList).next();
       nextData = getNextData(data, sortBy);
       if (sortBy && sortBy !== 'newest') continue;
     }
-    for (const result of searchDict(data, selector)) {
+    for (const result of searchDict(data, selectorItem)) {
       count += 1;
       yield result;
       if (count === limit) {

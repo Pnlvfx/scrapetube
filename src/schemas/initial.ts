@@ -57,6 +57,7 @@ const searchFilterButton = undefined;
 const aboutTheseResultsButton = undefined;
 const topbar = undefined;
 const lockupViewModel = undefined;
+const adSlotAndLayoutMetadata = undefined;
 
 const contentsRender = {
   adSlotRenderer: Joi.object(adSlotRenderer),
@@ -108,7 +109,12 @@ export const initialDataSchema = Joi.object({
   onResponseReceivedCommands: Joi.array().items(
     Joi.object({
       clickTrackingParams: Joi.string().required(),
-      adsControlFlowOpportunityReceivedCommand: Joi.object({ opportunityType: Joi.string().required() }).required(),
+      adsControlFlowOpportunityReceivedCommand: Joi.object({
+        opportunityType: Joi.string().required(),
+        isInitialLoad: Joi.boolean(),
+        adSlotAndLayoutMetadata: Joi.array().items(Joi.object(adSlotAndLayoutMetadata)),
+        enablePacfLoggingWeb: Joi.boolean(),
+      }).required(),
     }),
   ),
   targetId: Joi.string().required(),

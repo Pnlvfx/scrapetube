@@ -54,7 +54,14 @@ export const getChannel = async function* ({
     baseUrl = `https://www.youtube.com/@${channelUsername}`;
   } else throw new Error('You need to provide one between channelUrl, channelId or channelUsername option.');
   const url = `${baseUrl}/${contentType}?view=0&flow=grid`;
-  const videos = getVideos<'channel'>(url, { api_endpoint, selector: typePropertyMap[contentType], limit, sleep, sortBy });
+  const videos = getVideos<'channel'>(url, {
+    api_endpoint,
+    selectorList: 'contents',
+    selectorItem: typePropertyMap[contentType],
+    limit,
+    sleep,
+    sortBy,
+  });
   for await (const video of videos) {
     yield video;
   }
