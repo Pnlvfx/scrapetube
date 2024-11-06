@@ -5,7 +5,9 @@ const typePropertyMap = {
   videos: 'videoRenderer',
   streams: 'videoRenderer',
   shorts: 'reelItemRenderer',
-};
+} as const;
+
+export type ChannelSelector = (typeof typePropertyMap)[keyof typeof typePropertyMap];
 
 interface FromChannelID {
   channelId: string;
@@ -25,7 +27,7 @@ interface FromChannelUsername {
   channelUsername: string;
 }
 
-type ChannelOpts = (FromChannelID | FromChannelUrl | FromChannelUsername) & {
+export type ChannelOpts = (FromChannelID | FromChannelUrl | FromChannelUsername) & {
   limit?: number;
   sleep?: number;
   sortBy?: ChannelSort;
@@ -52,7 +54,7 @@ export const getChannel = async function* ({
     baseUrl = `https://www.youtube.com/@${channelUsername}`;
   } else throw new Error('You need to provide one between channelUrl, channelId or channelUsername option.');
   const url = `${baseUrl}/${contentType}?view=0&flow=grid`;
-  const videos = getVideos(url, { api_endpoint, selector: typePropertyMap[contentType], limit, sleep, sortBy });
+  const videos = getVideos<'channel'>(url, { api_endpoint, selector: typePropertyMap[contentType], limit, sleep, sortBy });
   for await (const video of videos) {
     yield video;
   }

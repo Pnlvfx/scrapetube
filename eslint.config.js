@@ -57,6 +57,7 @@ export default tseslint.config(
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/catch-error-name': 'off',
       'unicorn/no-keyword-prefix': 'off',
+      'sonarjs/todo-tag': 'warn',
 
       // duplicates of tseslint
       'sonarjs/no-misused-promises': 'off',

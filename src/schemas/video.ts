@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import {
   badgesSchema,
+  commandMetadata,
   longBylineTextSchema,
   navigationEndpointSchema,
   runsSchema,
@@ -63,9 +64,7 @@ export const channelThumbnailWithLinkRendererSchema = Joi.object({
 
 export const inlinePlaybackEndpointSchema = Joi.object({
   clickTrackingParams: Joi.string().required(),
-  commandMetadata: Joi.object({
-    webCommandMetadata: Joi.any().required(),
-  }).required(),
+  commandMetadata: commandMetadata.required(),
   watchEndpoint: navigationEndpointSchema.required(),
 }).meta({ className: 'InlinePlaybackEndpoint' });
 

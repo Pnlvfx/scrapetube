@@ -1,20 +1,29 @@
-import type { Client } from './interfaces/client.js';
-import coraline from 'coraline';
+import type { Client, ClientResponse } from './interfaces/client.js';
+import type { SearchSelector, YTResult } from './search.js';
+import type { ChannelSelector } from './channel.js';
+import type { InitialData } from './interfaces/initial.js';
+import coraline, { getEntries } from 'coraline';
+import { clientResponseSchema } from './schemas/client.js';
+import { initialDataSchema } from './schemas/initial.js';
+
+type SelectorKeys = SearchSelector | ChannelSelector;
 
 interface VideoOpts {
   api_endpoint: string;
-  selector: string;
+  selector: SelectorKeys;
   limit?: number;
   sleep: number;
   sortBy?: ChannelSort;
 }
 
 const headers: HeadersInit = {
-  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-  'Accept-Language': 'en',
+  'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+  'accept-language': 'en',
 };
 
 export type ChannelSort = keyof typeof sort_by_map;
+
+type NextData = ReturnType<typeof getNextData>;
 
 const sort_by_map = {
   newest: 0,
@@ -23,29 +32,35 @@ const sort_by_map = {
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export const getVideos = async function* (url: string, { api_endpoint, selector, limit, sleep, sortBy }: VideoOpts) {
-  let isFirst = true;
+export const getVideos = async function* <T extends keyof YTResult>(
+  url: string,
+  { api_endpoint, selector, limit, sleep, sortBy }: VideoOpts,
+): AsyncGenerator<YTResult[T]> {
+  /** Is first has been replaced by checking if there is data as it's the same thing but simpler. */
   let quit = false;
   let count = 0;
-  let data;
-  let nextData;
+  let data: InitialData | undefined;
+  let nextData: NextData | undefined;
   let apiKey: string | undefined;
-  let client: Client['client'] | undefined;
+  let client: Client | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   while (true) {
-    if (isFirst) {
+    if (data) {
+      if (!apiKey || !nextData || !client) throw new Error('Internal error: Incorrect loop, please report it to the github repository issue!');
+      data = (await getAjaxData(api_endpoint, apiKey, nextData, client)) as InitialData;
+      nextData = getNextData(data);
+    } else {
       const html = await getInitialData(url);
-      client = (JSON.parse(getJsonFromHtml(html, 'INNERTUBE_CONTEXT', 2, '"}},') + '"}}') as Client).client;
+      const res = JSON.parse(getJsonFromHtml(html, 'INNERTUBE_CONTEXT', 2, '"}},') + '"}}') as ClientResponse;
+      await clientResponseSchema.validateAsync(res);
+      client = res.client;
       apiKey = getJsonFromHtml(html, 'innertubeApiKey', 3);
       headers['X-Youtube-Client-Name'] = '1';
       headers['X-Youtube-Client-Version'] = client.clientVersion;
-      data = JSON.parse(getJsonFromHtml(html, 'var ytInitialData = ', 0, '};') + '}');
+      data = JSON.parse(getJsonFromHtml(html, 'var ytInitialData = ', 0, '};') + '}') as InitialData;
+      await initialDataSchema.validateAsync(data);
       nextData = getNextData(data, sortBy);
-      isFirst = false;
       if (sortBy && sortBy !== 'newest') continue;
-    } else {
-      if (!apiKey || !nextData || !client) throw new Error('Internal error: Incorrect loop, please report it to the github repository issue!');
-      data = await getAjaxData(api_endpoint, apiKey, nextData, client);
-      nextData = getNextData(data);
     }
     for (const result of searchDict(data, selector)) {
       count += 1;
@@ -55,15 +70,16 @@ export const getVideos = async function* (url: string, { api_endpoint, selector,
         break;
       }
     }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!nextData || quit) break;
     await coraline.wait(sleep);
   }
 };
 
-const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: Record<string, unknown>, client: Client['client']) => {
+const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: NextData, client: Client) => {
   const body = {
-    context: { clickTracking: nextData['click_params'], client },
-    continuation: nextData['token'],
+    context: { clickTracking: nextData.click_params, client },
+    continuation: nextData.token,
   };
   const query = new URLSearchParams({ key: apiKey });
   const res = await fetch(api_endpoint + '?' + query.toString(), {
@@ -75,7 +91,7 @@ const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: Recor
     },
   });
   if (!res.ok) throw new Error(`${res.status.toString()}: ${res.statusText}`);
-  return res.json();
+  return res.json() as Promise<unknown>;
 };
 
 const getInitialData = async (url: string) => {
@@ -95,17 +111,17 @@ const getJsonFromHtml = (html: string, key: string, numChars = 2, stop = '"') =>
   return html.slice(begin, end);
 };
 
-const getNextData = (data: unknown, sortBy?: ChannelSort) => {
+const getNextData = (data: InitialData, sortBy?: ChannelSort) => {
   let endpoint;
   // eslint-disable-next-line unicorn/prefer-ternary
   if (sortBy && sortBy !== 'newest') {
+    //  data.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents.map((content) => content.itemSectionRenderer?.contents.map((cc) => cc.))
     endpoint = searchDict(data, 'feedFilterChipBarRenderer').next().value['contents'][sort_by_map[sortBy]]['chipCloudChipRenderer'][
       'navigationEndpoint'
     ];
   } else {
     endpoint = searchDict(data, 'continuationEndpoint').next();
   }
-  if (!endpoint) throw new Error('Missing endpoint');
   const tokenData = endpoint.value['continuationCommand'];
   if (!tokenData) throw new Error('Missing next data token');
   return {
@@ -114,23 +130,34 @@ const getNextData = (data: unknown, sortBy?: ChannelSort) => {
   };
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const searchDict = function* (partial: unknown, searchKey: string) {
-  const stack = [partial];
+type NestedKeyOf<ObjectType extends object> = {
+  [Key in keyof ObjectType]: ObjectType[Key] extends object ? NestedKeyOf<ObjectType[Key]> : Key;
+}[keyof ObjectType];
 
+type FlattenObject<T extends object> = {
+  [K in keyof T]: T[K] extends object ? FlattenObject<T[K]> : T[K];
+}[keyof T];
+
+type NestedInitialData = FlattenObject<InitialData>;
+
+/** @TODO Try to remove this shit. */
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const searchDict = function* <T extends keyof NestedInitialData>(partial: InitialData, searchKey: T): Generator<NestedInitialData[T]> {
+  const stack: NestedInitialData[] = [partial];
   while (stack.length > 0) {
     const currentItem = stack.shift();
-    if (typeof currentItem === 'object' && currentItem !== null) {
+    // eslint-disable-next-line unicorn/no-null, @typescript-eslint/no-unnecessary-condition
+    if (typeof currentItem === 'object' && currentItem != null) {
       if (Array.isArray(currentItem)) {
         for (const value of currentItem) {
-          stack.push(value);
+          stack.push(value as NestedInitialData);
         }
       } else {
-        for (const [key, value] of Object.entries(currentItem)) {
+        for (const [key, value] of getEntries(currentItem)) {
           if (key === searchKey) {
-            yield value;
+            yield value as NestedInitialData[T];
           } else {
-            stack.push(value);
+            stack.push(value as NestedInitialData);
           }
         }
       }

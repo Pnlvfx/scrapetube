@@ -3,7 +3,7 @@
  * Do not modify this file manually
  */
 
-import { DescriptionSnippet, LongBylineText, NavigationEndpoint, Badges, ShortBylineText, SubscriberCountText, Thumbnail, Runs } from './index.js';
+import { DescriptionSnippet, LongBylineText, NavigationEndpoint, Badges, ShortBylineText, SubscriberCountText, Thumbnail, Runs } from './shared';
 
 export interface Channel {
   channelId: string;
@@ -12,7 +12,7 @@ export interface Channel {
   navigationEndpoint: NavigationEndpoint;
   ownerBadges?: Badges;
   shortBylineText: ShortBylineText;
-  subscribeButton: subscribeButton;
+  subscribeButton: SubscribeButton;
   subscriberCountText?: SubscriberCountText;
   subscriptionButton: SubscriptionButton;
   thumbnail: Thumbnail;
@@ -23,6 +23,21 @@ export interface Channel {
 
 export interface ChannelTitle {
   simpleText: string;
+}
+
+export interface SubscribeButton {
+  buttonRenderer: {
+    isDisabled: boolean;
+    navigationEndpoint: NavigationEndpoint;
+    size: 'SIZE_DEFAULT';
+    style: 'STYLE_DESTRUCTIVE';
+    text: {
+      runs: {
+        text: string;
+      }[];
+    };
+    trackingParams: string;
+  };
 }
 
 export interface SubscriptionButton {
@@ -37,19 +52,4 @@ export interface VideoCountText {
   };
   runs?: Runs;
   simpleText?: string;
-}
-
-export interface subscribeButton {
-  buttonRenderer: {
-    isDisabled: boolean;
-    navigationEndpoint: NavigationEndpoint;
-    size: 'SIZE_DEFAULT';
-    style: 'STYLE_DESTRUCTIVE';
-    text: {
-      runs: {
-        text: string;
-      }[];
-    };
-    trackingParams: string;
-  };
 }

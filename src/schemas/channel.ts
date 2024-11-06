@@ -45,7 +45,7 @@ export const subscribeButtonSchema = Joi.object({
     navigationEndpoint: navigationEndpointSchema.required(),
     trackingParams: Joi.string().required(),
   }).required(),
-}).meta({ className: 'subscribeButton' });
+}).meta({ className: 'SubscribeButton' });
 
 export const channelSchema = Joi.object({
   channelId: Joi.string().required(),

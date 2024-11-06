@@ -1,13 +1,22 @@
 import Joi from 'joi';
 
 export const webCommandMetadataSchema = Joi.object({
-  url: Joi.string().required(),
-  webPageType: Joi.string()
-    .valid('WEB_PAGE_TYPE_CHANNEL', 'WEB_PAGE_TYPE_WATCH', 'WEB_PAGE_TYPE_UNKNOWN', 'WEB_PAGE_TYPE_SEARCH', 'WEB_PAGE_TYPE_SHORTS')
-    .required(),
-  rootVe: Joi.number().required(),
+  url: Joi.string(),
+  webPageType: Joi.string().valid(
+    'WEB_PAGE_TYPE_CHANNEL',
+    'WEB_PAGE_TYPE_WATCH',
+    'WEB_PAGE_TYPE_UNKNOWN',
+    'WEB_PAGE_TYPE_SEARCH',
+    'WEB_PAGE_TYPE_SHORTS',
+  ),
+  rootVe: Joi.number(),
   apiUrl: Joi.string(),
+  sendPost: Joi.boolean(),
 }).meta({ className: 'WebCommandMetadata' });
+
+export const commandMetadata = Joi.object({
+  webCommandMetadata: webCommandMetadataSchema.required(),
+}).meta({ className: 'CommandMetadata' });
 
 export const browseEndpointSchema = Joi.object({
   browseId: Joi.string().required(),
@@ -17,13 +26,23 @@ export const browseEndpointSchema = Joi.object({
 export const signInEndpointSchema = Joi.object({
   nextEndpoint: Joi.object({
     clickTrackingParams: Joi.string().required(),
-    commandMetadata: Joi.object({
-      webCommandMetadata: webCommandMetadataSchema.required(),
-    }),
+    commandMetadata,
     searchEndpoint: Joi.object({ query: Joi.string().required(), params: Joi.string() }),
   }),
   continueAction: Joi.string().required(),
 }).meta({ className: 'SignInEndpoint' });
+
+export const thumbnailSchema = Joi.object({
+  thumbnails: Joi.array()
+    .items(
+      Joi.object({
+        url: Joi.string().required(),
+        width: Joi.number().required(),
+        height: Joi.number().required(),
+      }),
+    )
+    .required(),
+}).meta({ className: 'Thumbnail' });
 
 const watchEndpoint = {
   // for search video
@@ -43,26 +62,12 @@ const watchEndpoint = {
 export const navigationEndpointSchema = Joi.object({
   ...watchEndpoint,
   clickTrackingParams: Joi.string(),
-  commandMetadata: Joi.object({
-    webCommandMetadata: webCommandMetadataSchema.required(),
-  }),
+  commandMetadata,
   browseEndpoint: browseEndpointSchema, // for search channel
   watchEndpoint: Joi.object(watchEndpoint),
   signInEndpoint: signInEndpointSchema,
-  reelWatchEndpoint: Joi.any(),
+  reelWatchEndpoint: Joi.object({ ...watchEndpoint, thumbnail: thumbnailSchema }),
 }).meta({ className: 'NavigationEndpoint' });
-
-export const thumbnailSchema = Joi.object({
-  thumbnails: Joi.array()
-    .items(
-      Joi.object({
-        url: Joi.string().required(),
-        width: Joi.number().required(),
-        height: Joi.number().required(),
-      }),
-    )
-    .required(),
-}).meta({ className: 'Thumbnail' });
 
 export const runsSchema = Joi.array()
   .items(

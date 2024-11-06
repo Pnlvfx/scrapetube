@@ -6,7 +6,8 @@ async function types(): Promise<void> {
     schemaDirectory: './src/schemas',
     typeOutputDirectory: './src/interfaces',
     debug: true,
+    omitIndexFiles: true,
   });
 }
 
-types();
+void types();
