@@ -1,5 +1,13 @@
 import Joi from 'joi';
-import { badgesSchema, longBylineTextSchema, navigationEndpointSchema, runsSchema, shortBylineTextSchema, thumbnailSchema } from './shared.js';
+import {
+  badgesSchema,
+  longBylineTextSchema,
+  navigationEndpointSchema,
+  runsSchema,
+  shortBylineTextSchema,
+  thumbnailSchema,
+  webCommandMetadataSchema,
+} from './shared.js';
 
 export const accessibilityDataSchema = Joi.object({
   label: Joi.string(),
@@ -69,6 +77,15 @@ export const snippetSchema = Joi.object({
 
 export const detailedMetadataSnippetsSchema = Joi.array().items(snippetSchema.required()).meta({ className: 'DetailedMetadataSnippets' });
 
+export const avatarViewModelSchema = Joi.object({
+  image: Joi.object({
+    sources: Joi.array()
+      .items(Joi.object({ url: Joi.string().required(), width: Joi.number().required(), height: Joi.number().required() }))
+      .required(),
+  }).required(),
+  avatarImageSize: Joi.string().valid('AVATAR_SIZE_M').required(),
+}).meta({ className: 'AvatarViewModel' });
+
 export const videoSchema = Joi.object({
   videoId: Joi.string().required(),
   thumbnail: thumbnailSchema.required(),
@@ -95,4 +112,30 @@ export const videoSchema = Joi.object({
   expandableMetadata: Joi.object(),
   inlinePlaybackEndpoint: inlinePlaybackEndpointSchema,
   searchVideoResultEntityKey: Joi.string().required(),
+  avatar: Joi.object({
+    avatarViewModel: avatarViewModelSchema,
+    decoratedAvatarViewModel: Joi.object({
+      avatar: Joi.object({
+        avatarViewModel: avatarViewModelSchema.required(),
+      }),
+      a11yLabel: Joi.string().required(),
+      rendererContext: Joi.object({
+        commandContext: Joi.object({
+          onTap: Joi.object({
+            innertubeCommand: Joi.object({
+              clickTrackingParams: Joi.string().required(),
+              commandMetadata: Joi.object({
+                url: Joi.string(),
+                webPageType: Joi.string(),
+                rootVe: Joi.number(),
+                apiUrl: Joi.string(),
+                webCommandMetadata: webCommandMetadataSchema,
+              }).required(),
+              browseEndpoint: Joi.object({ browseId: Joi.string().required(), canonicalBaseUrl: Joi.string() }).required(),
+            }).required(),
+          }).required(),
+        }).required(),
+      }).required(),
+    }).required(),
+  }).required(),
 }).meta({ className: 'Video' });

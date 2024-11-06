@@ -2,7 +2,7 @@ import type { Params$Resource$Search$List } from './types/search-options.js';
 import type { Schema$SearchListResponse } from './types/search-response.js';
 import { getEntries } from 'coraline';
 
-const searchList = async (params?: Params$Resource$Search$List): Promise<Schema$SearchListResponse> => {
+const searchList = async (params?: Params$Resource$Search$List) => {
   let separator = '?';
   let url = 'https://youtube.googleapis.com/youtube/v3/search';
   if (params) {
@@ -19,7 +19,7 @@ const searchList = async (params?: Params$Resource$Search$List): Promise<Schema$
       'Content-Type': 'application/json',
     },
   });
-  const data = await res.json();
+  const data = (await res.json()) as Schema$SearchListResponse;
   if (!res.ok) throw new Error(JSON.stringify(data));
   return data;
 };
@@ -27,7 +27,7 @@ const searchList = async (params?: Params$Resource$Search$List): Promise<Schema$
 export const searchWithGoogle = async (q: string): Promise<string> => {
   if (!process.env['YOUTUBE_API_KEY']) {
     throw new Error(
-      'You need to get a google key and enable youtubev3 to use this function, you can use the search function which does not require authentication.',
+      'You need to get a google key and enable youtube to use this function, you can use the search function which does not require authentication.',
     );
   }
   const list = await searchList({

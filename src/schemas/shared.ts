@@ -106,7 +106,7 @@ export const longBylineTextSchema = Joi.object({
 
 export const metadataBadgeRendererSchema = Joi.object({
   metadataBadgeRenderer: Joi.object({
-    icon: Joi.object({ iconType: Joi.string().valid('CHECK_CIRCLE_THICK', 'OFFICIAL_ARTIST_BADGE').required() }),
+    icon: Joi.object({ iconType: Joi.string().valid('CHECK_CIRCLE_THICK', 'OFFICIAL_ARTIST_BADGE', 'AUDIO_BADGE').required() }),
     style: Joi.string().valid('BADGE_STYLE_TYPE_VERIFIED', 'BADGE_STYLE_TYPE_SIMPLE', 'BADGE_STYLE_TYPE_VERIFIED_ARTIST'),
     tooltip: Joi.string(),
     trackingParams: Joi.string().required(),

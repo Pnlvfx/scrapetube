@@ -45,6 +45,7 @@ interface StandardParameters {
   upload_protocol?: string;
 }
 
+// eslint-disable-next-line sonarjs/class-name
 export interface Params$Resource$Search$List extends StandardParameters {
   /**
    * Filter on resources belonging to this channelId.

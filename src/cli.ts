@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import coraline from 'coraline';
-import scrapetube from './index.js';
+import scrapetube from './scrapetube.js';
 
 const test = async (q?: string) => {
   if (!q) {
@@ -38,4 +38,10 @@ const test = async (q?: string) => {
 
 const title = 'Press 1 to test channel search, press 2 to test video search or press 3 to get a channel';
 
-coraline.createScriptExec(test, { repeat: true, title });
+const run = async () => {
+  const input = await coraline.input.create({ title });
+  await test(input);
+  void run();
+};
+
+void run();

@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-redundant-optional */
 import { ChannelSort, getVideos } from './core.js';
 
 const typePropertyMap = {
@@ -6,23 +7,23 @@ const typePropertyMap = {
   shorts: 'reelItemRenderer',
 };
 
-type FromChannelID = {
+interface FromChannelID {
   channelId: string;
   channelUrl?: undefined;
   channelUsername?: undefined;
-};
+}
 
-type FromChannelUrl = {
+interface FromChannelUrl {
   channelId?: undefined;
   channelUrl: string;
   channelUsername?: undefined;
-};
+}
 
-type FromChannelUsername = {
+interface FromChannelUsername {
   channelId?: undefined;
   channelUrl?: undefined;
   channelUsername: string;
-};
+}
 
 type ChannelOpts = (FromChannelID | FromChannelUrl | FromChannelUsername) & {
   limit?: number;

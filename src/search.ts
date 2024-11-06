@@ -24,12 +24,12 @@ export interface SearchOpts {
   sortBy?: keyof typeof sort_by_map;
 }
 
-export type YTResult = {
+export interface YTResult {
   video: Video;
   channel: Channel;
   playlist: unknown;
   movie: unknown;
-};
+}
 
 export const search = async function* <T extends keyof YTResult>(
   query: string,
@@ -43,7 +43,7 @@ export const search = async function* <T extends keyof YTResult>(
   const videos = getVideos(url, { selector, limit, sleep, api_endpoint });
   for await (const video of videos) {
     if (process.env['NODE_ENV'] !== 'production') {
-      validate(type, video);
+      await validate(type, video);
     }
     yield video;
   }

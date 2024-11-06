@@ -74,7 +74,7 @@ const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: Recor
       'Content-Type': 'application/json',
     },
   });
-  if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`);
+  if (!res.ok) throw new Error(`${res.status.toString()}: ${res.statusText}`);
   return res.json();
 };
 
@@ -85,7 +85,7 @@ const getInitialData = async (url: string) => {
     method: 'GET',
     headers,
   });
-  if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`);
+  if (!res.ok) throw new Error(`${res.status.toString()}: ${res.statusText}`);
   return res.text();
 };
 

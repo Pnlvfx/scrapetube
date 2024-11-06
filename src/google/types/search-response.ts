@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/class-name */
 export interface Schema$PageInfo {
   /**
    * The number of results included in the API response.
