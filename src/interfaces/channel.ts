@@ -3,17 +3,21 @@
  * Do not modify this file manually
  */
 
-import { DescriptionSnippet, LongBylineText, NavigationEndpoint, Badges, ShortBylineText, SubscriberCountText, Thumbnail, Runs } from './shared.js';
+import { Run, LongBylineText, NavigationEndpoint, Badges, ShortBylineText, Thumbnail } from './shared';
 
 export interface Channel {
   channelId: string;
-  descriptionSnippet?: DescriptionSnippet;
+  descriptionSnippet?: {
+    runs: Run[];
+  };
   longBylineText: LongBylineText;
   navigationEndpoint: NavigationEndpoint;
   ownerBadges?: Badges;
   shortBylineText: ShortBylineText;
   subscribeButton: SubscribeButton;
-  subscriberCountText?: SubscriberCountText;
+  subscriberCountText?: {
+    simpleText: string;
+  };
   subscriptionButton: SubscriptionButton;
   thumbnail: Thumbnail;
   title: ChannelTitle;
@@ -50,6 +54,6 @@ export interface VideoCountText {
       label: string;
     };
   };
-  runs?: Runs;
+  runs?: Run[];
   simpleText?: string;
 }

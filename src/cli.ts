@@ -9,7 +9,7 @@ const test = async (q?: string) => {
   }
   switch (q) {
     case '1': {
-      const videos = scrapetube.search('Reuters', 'channel', { limit: 5 });
+      const videos = scrapetube.search('Reuters', { limit: 15, type: 'channel' });
       for await (const video of videos) {
         coraline.log(video);
         break;
@@ -18,7 +18,7 @@ const test = async (q?: string) => {
     }
     case '2': {
       console.time('search');
-      const videos = scrapetube.search('Shiva', 'video', { limit: 100 });
+      const videos = scrapetube.search('Trap', { limit: 25 });
       for await (const video of videos) {
         console.log(video.videoId);
       }
@@ -26,6 +26,14 @@ const test = async (q?: string) => {
       break;
     }
     case '3': {
+      const videos = scrapetube.search('Italy', { type: 'playlist', limit: 1 });
+      for await (const video of videos) {
+        console.log(video);
+      }
+      console.timeEnd('search');
+      break;
+    }
+    case '4': {
       const latestVideos = scrapetube.getChannel({ channelUsername: 'Reuters' });
       for await (const video of latestVideos) {
         coraline.log(video);
@@ -37,7 +45,7 @@ const test = async (q?: string) => {
   }
 };
 
-const title = 'Press 1 to test channel search, press 2 to test video search or press 3 to get a channel';
+const title = 'Press 1 to test channel search, press 2 to test video search, press 3 to test playlist search, press 4 to test get channel';
 
 const run = async () => {
   const input = await coraline.input.create({ title });

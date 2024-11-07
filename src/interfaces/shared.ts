@@ -5,17 +5,8 @@
 
 export type Badges = MetadataBadgeRenderer[];
 
-export interface BrowseEndpoint {
-  browseId: string;
-  canonicalBaseUrl?: string;
-}
-
 export interface CommandMetadata {
   webCommandMetadata: WebCommandMetadata;
-}
-
-export interface DescriptionSnippet {
-  runs: Runs;
 }
 
 export interface LongBylineText {
@@ -32,17 +23,20 @@ export interface MetadataBadgeRenderer {
     };
     groups?: string[];
     icon?: {
-      iconType: 'CHECK_CIRCLE_THICK' | 'OFFICIAL_ARTIST_BADGE' | 'AUDIO_BADGE';
+      iconType: 'CHECK_CIRCLE_THICK' | 'OFFICIAL_ARTIST_BADGE' | 'AUDIO_BADGE' | 'LIVE';
     };
     label?: string;
-    style?: 'BADGE_STYLE_TYPE_VERIFIED' | 'BADGE_STYLE_TYPE_SIMPLE' | 'BADGE_STYLE_TYPE_VERIFIED_ARTIST';
+    style?: 'BADGE_STYLE_TYPE_VERIFIED' | 'BADGE_STYLE_TYPE_SIMPLE' | 'BADGE_STYLE_TYPE_VERIFIED_ARTIST' | 'BADGE_STYLE_TYPE_LIVE_NOW';
     tooltip?: string;
     trackingParams: string;
   };
 }
 
 export interface NavigationEndpoint {
-  browseEndpoint?: BrowseEndpoint;
+  browseEndpoint?: {
+    browseId: string;
+    canonicalBaseUrl?: string;
+  };
   clickTrackingParams?: string;
   commandMetadata?: CommandMetadata;
   params?: string;
@@ -52,13 +46,16 @@ export interface NavigationEndpoint {
   }[];
   playerParams?: string;
   reelWatchEndpoint?: {
+    overlay: object;
     params?: string;
     playerExtraUrlParams?: {
       key: string;
       value: string;
     }[];
     playerParams?: string;
-    thumbnail?: Thumbnail;
+    sequenceParams: string;
+    sequenceProvider: string;
+    thumbnail: Thumbnail;
     videoId?: string;
     watchEndpointSupportedOnesieConfig?: {
       html5PlaybackOnesieConfig: {
@@ -68,7 +65,17 @@ export interface NavigationEndpoint {
       };
     };
   };
-  signInEndpoint?: SignInEndpoint;
+  signInEndpoint?: {
+    continueAction: string;
+    nextEndpoint?: {
+      clickTrackingParams: string;
+      commandMetadata?: CommandMetadata;
+      searchEndpoint?: {
+        params?: string;
+        query: string;
+      };
+    };
+  };
   videoId?: string;
   watchEndpoint?: {
     params?: string;
@@ -95,11 +102,11 @@ export interface NavigationEndpoint {
   };
 }
 
-export type Runs = {
+export interface Run {
   bold?: boolean;
   navigationEndpoint?: NavigationEndpoint;
   text: string;
-}[];
+}
 
 export interface ShortBylineText {
   runs: {
@@ -108,23 +115,8 @@ export interface ShortBylineText {
   }[];
 }
 
-export interface SignInEndpoint {
-  continueAction: string;
-  nextEndpoint?: {
-    clickTrackingParams: string;
-    commandMetadata?: CommandMetadata;
-    searchEndpoint?: {
-      params?: string;
-      query: string;
-    };
-  };
-}
-
-export interface SubscriberCountText {
-  simpleText: string;
-}
-
 export interface Thumbnail {
+  isOriginalAspectRatio?: boolean;
   thumbnails: {
     height: number;
     url: string;

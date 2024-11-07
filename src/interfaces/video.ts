@@ -3,7 +3,7 @@
  * Do not modify this file manually
  */
 
-import { Runs, NavigationEndpoint, Thumbnail, CommandMetadata, WebCommandMetadata, Badges, LongBylineText, ShortBylineText } from './shared.js';
+import { Run, NavigationEndpoint, Thumbnail, CommandMetadata, WebCommandMetadata, Badges, LongBylineText, ShortBylineText } from './shared';
 
 export interface Accessibility {
   accessibilityData: AccessibilityData;
@@ -15,7 +15,7 @@ export interface AccessibilityData {
 
 export interface AccessibilityDataWithObject {
   accessibility?: Accessibility;
-  runs?: Runs;
+  runs?: Run[];
   simpleText?: string;
 }
 
@@ -60,7 +60,7 @@ export interface MenuRenderer {
 }
 
 export interface OwnerText {
-  runs?: Runs;
+  runs: Run[];
 }
 
 export interface PublishedTimeText {
@@ -75,7 +75,7 @@ export interface Snippet {
 
 export interface Title {
   accessibility: Accessibility;
-  runs?: Runs;
+  runs: Run[];
 }
 
 export interface Video {
@@ -113,7 +113,7 @@ export interface Video {
   detailedMetadataSnippets?: DetailedMetadataSnippets;
   expandableMetadata?: object;
   inlinePlaybackEndpoint?: InlinePlaybackEndpoint;
-  lengthText: LengthText;
+  lengthText?: LengthText;
   longBylineText: LongBylineText;
   menu: MenuRenderer;
   navigationEndpoint: NavigationEndpoint;
@@ -136,5 +136,6 @@ export interface Video {
 }
 
 export interface ViewCountText {
-  simpleText: string;
+  runs?: Run[];
+  simpleText?: string;
 }

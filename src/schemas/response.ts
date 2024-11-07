@@ -2,6 +2,7 @@ import Joi from 'joi';
 import { videoSchema } from './video.js';
 import { channelSchema } from './channel.js';
 import { commandMetadata } from './shared.js';
+import { playlistSchema } from './playlist.js';
 
 const responseContext = {
   serviceTrackingParams: Joi.array()
@@ -58,18 +59,18 @@ const aboutTheseResultsButton = undefined;
 const topbar = undefined;
 const lockupViewModel = undefined;
 const adSlotAndLayoutMetadata = undefined;
-// move to a separate file
-const playlistSchema = undefined;
+const movieRenderer = undefined;
 
 const contentsRender = {
-  adSlotRenderer: Joi.object(adSlotRenderer),
   videoRenderer: videoSchema,
+  channelRenderer: channelSchema,
+  playlistRenderer: playlistSchema,
+  adSlotRenderer: Joi.object(adSlotRenderer),
   reelShelfRenderer: Joi.object(reelShelfRenderer),
   radioRenderer: Joi.object(radioRenderer),
   shelfRenderer: Joi.object(shelfRenderer),
   lockupViewModel: Joi.object(lockupViewModel),
-  channelRenderer: channelSchema,
-  playlistRenderer: Joi.object(playlistSchema),
+  movieRenderer: Joi.object(movieRenderer),
 };
 
 export const initialDataSchema = Joi.object({

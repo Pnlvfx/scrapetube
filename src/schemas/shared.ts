@@ -18,31 +18,19 @@ export const commandMetadata = Joi.object({
   webCommandMetadata: webCommandMetadataSchema.required(),
 }).meta({ className: 'CommandMetadata' });
 
-export const browseEndpointSchema = Joi.object({
+const browseEndpoint = {
   browseId: Joi.string().required(),
   canonicalBaseUrl: Joi.string(),
-}).meta({ className: 'BrowseEndpoint' });
+};
 
-export const signInEndpointSchema = Joi.object({
+const signInEndpoint = {
   nextEndpoint: Joi.object({
     clickTrackingParams: Joi.string().required(),
     commandMetadata,
     searchEndpoint: Joi.object({ query: Joi.string().required(), params: Joi.string() }),
   }),
   continueAction: Joi.string().required(),
-}).meta({ className: 'SignInEndpoint' });
-
-export const thumbnailSchema = Joi.object({
-  thumbnails: Joi.array()
-    .items(
-      Joi.object({
-        url: Joi.string().required(),
-        width: Joi.number().required(),
-        height: Joi.number().required(),
-      }),
-    )
-    .required(),
-}).meta({ className: 'Thumbnail' });
+};
 
 const watchEndpoint = {
   // for search video
@@ -59,29 +47,44 @@ const watchEndpoint = {
   }),
 };
 
+const reelWatchEndpointOverlay = undefined;
+const loggingContext = undefined;
+
+export const thumbnailSchema = Joi.object({
+  thumbnails: Joi.array()
+    .items(
+      Joi.object({
+        url: Joi.string().required(),
+        width: Joi.number().required(),
+        height: Joi.number().required(),
+      }),
+    )
+    .required(),
+  isOriginalAspectRatio: Joi.boolean(),
+}).meta({ className: 'Thumbnail' });
+
 export const navigationEndpointSchema = Joi.object({
   ...watchEndpoint,
   clickTrackingParams: Joi.string(),
   commandMetadata,
-  browseEndpoint: browseEndpointSchema, // for search channel
+  browseEndpoint: Joi.object(browseEndpoint), // for search channel
   watchEndpoint: Joi.object(watchEndpoint),
-  signInEndpoint: signInEndpointSchema,
-  reelWatchEndpoint: Joi.object({ ...watchEndpoint, thumbnail: thumbnailSchema }),
+  signInEndpoint: Joi.object(signInEndpoint),
+  reelWatchEndpoint: Joi.object({
+    ...watchEndpoint,
+    thumbnail: thumbnailSchema.required(),
+    overlay: Joi.object(reelWatchEndpointOverlay).required(),
+    sequenceProvider: Joi.string().required(),
+    sequenceParams: Joi.string().required(),
+    loggingContext: Joi.object(loggingContext),
+  }),
 }).meta({ className: 'NavigationEndpoint' });
 
-export const runsSchema = Joi.array()
-  .items(
-    Joi.object({
-      text: Joi.string().required(),
-      bold: Joi.bool(),
-      navigationEndpoint: navigationEndpointSchema,
-    }),
-  )
-  .meta({ className: 'Runs' });
-
-export const descriptionSnippetSchema = Joi.object({
-  runs: runsSchema.required(),
-}).meta({ className: 'DescriptionSnippet' });
+export const runSchema = Joi.object({
+  text: Joi.string().required(),
+  bold: Joi.bool(),
+  navigationEndpoint: navigationEndpointSchema,
+}).meta({ className: 'Run' });
 
 export const shortBylineTextSchema = Joi.object({
   runs: Joi.array()
@@ -93,10 +96,6 @@ export const shortBylineTextSchema = Joi.object({
     )
     .required(),
 }).meta({ className: 'ShortBylineText' });
-
-export const subscriberCountTextSchema = Joi.object({
-  simpleText: Joi.string().required(),
-}).meta({ className: 'SubscriberCountText' });
 
 export const longBylineTextSchema = Joi.object({
   runs: Joi.array()
@@ -111,8 +110,13 @@ export const longBylineTextSchema = Joi.object({
 
 export const metadataBadgeRendererSchema = Joi.object({
   metadataBadgeRenderer: Joi.object({
-    icon: Joi.object({ iconType: Joi.string().valid('CHECK_CIRCLE_THICK', 'OFFICIAL_ARTIST_BADGE', 'AUDIO_BADGE').required() }),
-    style: Joi.string().valid('BADGE_STYLE_TYPE_VERIFIED', 'BADGE_STYLE_TYPE_SIMPLE', 'BADGE_STYLE_TYPE_VERIFIED_ARTIST'),
+    icon: Joi.object({ iconType: Joi.string().valid('CHECK_CIRCLE_THICK', 'OFFICIAL_ARTIST_BADGE', 'AUDIO_BADGE', 'LIVE').required() }),
+    style: Joi.string().valid(
+      'BADGE_STYLE_TYPE_VERIFIED',
+      'BADGE_STYLE_TYPE_SIMPLE',
+      'BADGE_STYLE_TYPE_VERIFIED_ARTIST',
+      'BADGE_STYLE_TYPE_LIVE_NOW',
+    ),
     tooltip: Joi.string(),
     trackingParams: Joi.string().required(),
     accessibilityData: Joi.object({ label: Joi.string() }),

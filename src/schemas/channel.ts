@@ -1,14 +1,5 @@
 import Joi from 'joi';
-import {
-  badgesSchema,
-  descriptionSnippetSchema,
-  longBylineTextSchema,
-  navigationEndpointSchema,
-  runsSchema,
-  shortBylineTextSchema,
-  subscriberCountTextSchema,
-  thumbnailSchema,
-} from './shared.js';
+import { badgesSchema, longBylineTextSchema, navigationEndpointSchema, runSchema, shortBylineTextSchema, thumbnailSchema } from './shared.js';
 
 export const channelTitleSchema = Joi.object({
   simpleText: Joi.string().required(),
@@ -21,7 +12,7 @@ export const videoCountTextSchema = Joi.object({
     }).required(),
   }),
   simpleText: Joi.string(),
-  runs: runsSchema,
+  runs: Joi.array().items(runSchema),
 }).meta({ className: 'VideoCountText' });
 
 export const subscriptionButtonSchema = Joi.object({
@@ -47,17 +38,25 @@ export const subscribeButtonSchema = Joi.object({
   }).required(),
 }).meta({ className: 'SubscribeButton' });
 
+const descriptionSnippet = {
+  runs: Joi.array().items(runSchema).required(),
+};
+
+export const subscriberCountText = {
+  simpleText: Joi.string().required(),
+};
+
 export const channelSchema = Joi.object({
   channelId: Joi.string().required(),
   title: channelTitleSchema.required(),
   navigationEndpoint: navigationEndpointSchema.required(),
   thumbnail: thumbnailSchema.required(),
-  descriptionSnippet: descriptionSnippetSchema,
+  descriptionSnippet: Joi.object(descriptionSnippet),
   shortBylineText: shortBylineTextSchema.required(),
   videoCountText: videoCountTextSchema.required(),
   subscriptionButton: subscriptionButtonSchema.required(),
   ownerBadges: badgesSchema,
-  subscriberCountText: subscriberCountTextSchema,
+  subscriberCountText: Joi.object(subscriberCountText),
   subscribeButton: subscribeButtonSchema.required(),
   trackingParams: Joi.string().required(),
   longBylineText: longBylineTextSchema.required(),

@@ -23,6 +23,7 @@ export interface Client {
   osVersion: string;
   platform: string;
   remoteHost: string;
+  rolloutToken: string;
   userAgent: string;
   userInterfaceTheme: string;
   visitorData: string;

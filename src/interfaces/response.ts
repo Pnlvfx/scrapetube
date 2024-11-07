@@ -3,9 +3,10 @@
  * Do not modify this file manually
  */
 
-import { CommandMetadata } from './shared.js';
-import { Channel } from './channel.js';
-import { Video } from './video.js';
+import { CommandMetadata } from './shared';
+import { Channel } from './channel';
+import { Playlist } from './playlist';
+import { Video } from './video';
 
 export interface InitialData {
   contents: {
@@ -37,7 +38,7 @@ export interface InitialData {
                 };
                 channelRenderer?: Channel;
                 lockupViewModel?: object;
-                playlistRenderer?: object;
+                playlistRenderer?: Playlist;
                 radioRenderer?: object;
                 reelShelfRenderer?: object;
                 shelfRenderer?: object;

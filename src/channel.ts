@@ -27,7 +27,7 @@ interface FromChannelUsername {
   channelUsername: string;
 }
 
-export type ChannelOpts = (FromChannelID | FromChannelUrl | FromChannelUsername) & {
+export type ChannelOptions = (FromChannelID | FromChannelUrl | FromChannelUsername) & {
   limit?: number;
   sleep?: number;
   sortBy?: ChannelSort;
@@ -40,11 +40,11 @@ export const getChannel = async function* ({
   channelId,
   channelUrl,
   channelUsername,
-  contentType = 'videos',
-  limit = 5,
+  limit,
   sleep = 1000,
   sortBy = 'newest',
-}: ChannelOpts) {
+  contentType = 'videos',
+}: ChannelOptions) {
   let baseUrl;
   if (channelUrl) {
     baseUrl = channelUrl;

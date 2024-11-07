@@ -23,6 +23,7 @@ export const clientSchema = Joi.object({
   browserVersion: Joi.string().required(),
   acceptHeader: Joi.string().required(),
   deviceExperimentId: Joi.string().required(),
+  rolloutToken: Joi.string(),
 }).meta({ className: 'Client' });
 
 export const clientResponseSchema = Joi.object({

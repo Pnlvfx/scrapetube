@@ -4,7 +4,7 @@ import {
   commandMetadata,
   longBylineTextSchema,
   navigationEndpointSchema,
-  runsSchema,
+  runSchema,
   shortBylineTextSchema,
   thumbnailSchema,
   webCommandMetadataSchema,
@@ -19,7 +19,7 @@ export const accessibilitySchema = Joi.object({
 }).meta({ className: 'Accessibility' });
 
 export const titleSchema = Joi.object({
-  runs: runsSchema,
+  runs: Joi.array().items(runSchema).required(),
   accessibility: accessibilitySchema.required(),
 }).meta({ className: 'Title' });
 
@@ -33,17 +33,18 @@ export const lengthTextSchema = Joi.object({
 }).meta({ className: 'LengthText' });
 
 export const viewCountTextSchema = Joi.object({
-  simpleText: Joi.string().required(),
+  simpleText: Joi.string(),
+  runs: Joi.array().items(runSchema),
 }).meta({ className: 'ViewCountText' });
 
 export const ownerTextSchema = Joi.object({
-  runs: runsSchema,
+  runs: Joi.array().items(runSchema).required(),
 }).meta({ className: 'OwnerText' });
 
 export const accessibilityDataWithObjectSchema = Joi.object({
   accessibility: accessibilitySchema,
   simpleText: Joi.string(),
-  runs: runsSchema,
+  runs: Joi.array().items(runSchema),
 }).meta({ className: 'AccessibilityDataWithObject' });
 
 /** @TODO Fill in this objects. */
@@ -97,7 +98,7 @@ export const videoSchema = Joi.object({
   title: titleSchema.required(),
   longBylineText: longBylineTextSchema.required(),
   publishedTimeText: publishedTimeTextSchema,
-  lengthText: lengthTextSchema.required(),
+  lengthText: lengthTextSchema,
   viewCountText: viewCountTextSchema.required(),
   navigationEndpoint: navigationEndpointSchema.required(),
   badges: badgesSchema,
