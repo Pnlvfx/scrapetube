@@ -26,7 +26,7 @@ const test = async (q?: string) => {
       break;
     }
     case '3': {
-      const videos = scrapetube.search('Python', { type: 'playlist', limit: 5 });
+      const videos = scrapetube.search('Messi', { type: 'playlist', limit: 5 });
       for await (const video of videos) {
         console.log(video);
       }

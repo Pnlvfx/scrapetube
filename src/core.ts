@@ -2,14 +2,13 @@ import type { Client, ClientResponse } from './interfaces/client.js';
 import type { SearchSelector, YTResult } from './search.js';
 import type { ChannelSelector } from './channel.js';
 import type { InitialData } from './interfaces/response.js';
-import coraline, { getEntries, temporaryFile } from 'coraline';
+import coraline, { getEntries } from 'coraline';
 import { clientResponseSchema } from './schemas/client.js';
 import { initialDataSchema } from './schemas/response.js';
-import fs from 'fs/promises';
 
 type SelectorKeys = SearchSelector | ChannelSelector | 'playlistVideoRenderer';
 
-export type SelectorList = 'contents' | 'playlistVideoListRenderer';
+export type SelectorList = 'contents'; // | 'playlistVideoListRenderer';
 
 interface VideoOpts<K extends SelectorList> {
   api_endpoint: string;
