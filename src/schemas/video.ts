@@ -9,6 +9,7 @@ import {
   thumbnailSchema,
   webCommandMetadataSchema,
 } from './shared.js';
+import { simpleText } from './channel.js';
 
 export const accessibilityDataSchema = Joi.object({
   label: Joi.string(),
@@ -23,13 +24,9 @@ export const titleSchema = Joi.object({
   accessibility: accessibilitySchema.required(),
 }).meta({ className: 'Title' });
 
-export const publishedTimeTextSchema = Joi.object({
-  simpleText: Joi.string().required(),
-}).meta({ className: 'PublishedTimeText' });
-
 export const lengthTextSchema = Joi.object({
+  ...simpleText,
   accessibility: accessibilitySchema.required(),
-  simpleText: Joi.string().required(),
 }).meta({ className: 'LengthText' });
 
 export const viewCountTextSchema = Joi.object({
@@ -52,6 +49,8 @@ const menuSchema = undefined;
 const accessibility = undefined;
 const thumbnailOverlay = undefined;
 const movingThumbnailRenderer = undefined;
+const snippetTimestamp = undefined;
+const timestampEndpoint = undefined;
 
 export const menuRendererSchema = Joi.object({
   menuRenderer: Joi.object({
@@ -78,7 +77,9 @@ export const inlinePlaybackEndpointSchema = Joi.object({
 export const snippetSchema = Joi.object({
   snippetText: accessibilityDataWithObjectSchema.required(),
   snippetHoverText: accessibilityDataWithObjectSchema.required(),
+  snippetTimestamp: Joi.object(snippetTimestamp),
   maxOneLine: Joi.boolean(),
+  timestampEndpoint: Joi.object(timestampEndpoint),
 }).meta({ className: 'Snippet' });
 
 export const detailedMetadataSnippetsSchema = Joi.array().items(snippetSchema.required()).meta({ className: 'DetailedMetadataSnippets' });
@@ -97,7 +98,7 @@ export const videoSchema = Joi.object({
   thumbnail: thumbnailSchema.required(),
   title: titleSchema.required(),
   longBylineText: longBylineTextSchema.required(),
-  publishedTimeText: publishedTimeTextSchema,
+  publishedTimeText: simpleText,
   lengthText: lengthTextSchema,
   viewCountText: viewCountTextSchema.required(),
   navigationEndpoint: navigationEndpointSchema.required(),

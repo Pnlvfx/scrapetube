@@ -3,7 +3,7 @@
  * Do not modify this file manually
  */
 
-import { Run, LongBylineText, NavigationEndpoint, Badges, ShortBylineText, Thumbnail } from './shared';
+import { Run, LongBylineText, NavigationEndpoint, Badges, ShortBylineText, Thumbnail } from './shared.js';
 
 export interface Channel {
   channelId: string;

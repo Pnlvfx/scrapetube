@@ -45,6 +45,7 @@ const watchEndpoint = {
       }).required(),
     }).required(),
   }),
+  startTimeSeconds: Joi.number(),
 };
 
 const reelWatchEndpointOverlay = undefined;
@@ -77,6 +78,7 @@ export const navigationEndpointSchema = Joi.object({
     sequenceProvider: Joi.string().required(),
     sequenceParams: Joi.string().required(),
     loggingContext: Joi.object(loggingContext),
+    ustreamerConfig: Joi.string(),
   }),
 }).meta({ className: 'NavigationEndpoint' });
 

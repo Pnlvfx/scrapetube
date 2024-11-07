@@ -3,4 +3,6 @@
  * Do not modify this file manually
  */
 
-export interface Playlist {}
+export interface Playlist {
+  playlistId: string;
+}

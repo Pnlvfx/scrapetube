@@ -20,7 +20,7 @@ const responseContext = {
     trackingParam: Joi.string().required(),
   }).required(),
   webResponseContextExtensionData: Joi.object({
-    ytConfigData: Joi.object({ visitorData: Joi.string().required(), rootVisualElementType: Joi.number().required() }).required(),
+    ytConfigData: Joi.object({ visitorData: Joi.string().required(), rootVisualElementType: Joi.number().required() }),
     hasDecorated: Joi.boolean().required(),
   }).required(),
 };
@@ -59,6 +59,7 @@ const aboutTheseResultsButton = undefined;
 const topbar = undefined;
 const lockupViewModel = undefined;
 const adSlotAndLayoutMetadata = undefined;
+const horizontalCardListRenderer = undefined;
 const movieRenderer = undefined;
 
 const contentsRender = {
@@ -71,6 +72,24 @@ const contentsRender = {
   shelfRenderer: Joi.object(shelfRenderer),
   lockupViewModel: Joi.object(lockupViewModel),
   movieRenderer: Joi.object(movieRenderer),
+  horizontalCardListRenderer: Joi.object(horizontalCardListRenderer),
+};
+
+export const itemSectionRendererSchema = Joi.object({
+  contents: Joi.array().items(Joi.object(contentsRender)).required(),
+  trackingParams: Joi.string().required(),
+}).meta({ className: 'ItemSection' });
+
+const appendContinuationItemsAction = {
+  continuationItems: Joi.array()
+    .items(
+      Joi.object({
+        itemSectionRenderer: itemSectionRendererSchema,
+        continuationItemRenderer: Joi.object(continuationItemRenderer),
+      }),
+    )
+    .required(),
+  targetId: Joi.string(),
 };
 
 export const initialDataSchema = Joi.object({
@@ -83,10 +102,7 @@ export const initialDataSchema = Joi.object({
           contents: Joi.array()
             .items(
               Joi.object({
-                itemSectionRenderer: Joi.object({
-                  contents: Joi.array().items(Joi.object(contentsRender)).required(),
-                  trackingParams: Joi.string().required(),
-                }),
+                itemSectionRenderer: itemSectionRendererSchema,
                 continuationItemRenderer: Joi.object(continuationItemRenderer),
               }),
             )
@@ -98,7 +114,7 @@ export const initialDataSchema = Joi.object({
         }).required(),
       }).required(),
     }).required(),
-  }).required(),
+  }),
   trackingParams: Joi.string().required(),
   header: Joi.object({
     searchHeaderRenderer: Joi.object({
@@ -109,17 +125,18 @@ export const initialDataSchema = Joi.object({
     }).required(),
   }).required(),
   topbar: Joi.object(topbar).required(),
-  refinements: Joi.array().items(Joi.string()).required(),
+  refinements: Joi.array().items(Joi.string()),
   onResponseReceivedCommands: Joi.array().items(
     Joi.object({
       clickTrackingParams: Joi.string().required(),
       adsControlFlowOpportunityReceivedCommand: Joi.object({
-        opportunityType: Joi.string().required(),
+        opportunityType: Joi.string(),
         isInitialLoad: Joi.boolean(),
         adSlotAndLayoutMetadata: Joi.array().items(Joi.object(adSlotAndLayoutMetadata)),
         enablePacfLoggingWeb: Joi.boolean(),
-      }).required(),
+      }),
+      appendContinuationItemsAction: Joi.object(appendContinuationItemsAction),
     }),
   ),
-  targetId: Joi.string().required(),
+  targetId: Joi.string(),
 }).meta({ className: 'InitialData' });

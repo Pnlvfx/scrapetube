@@ -26,11 +26,10 @@ const test = async (q?: string) => {
       break;
     }
     case '3': {
-      const videos = scrapetube.search('Italy', { type: 'playlist', limit: 1 });
+      const videos = scrapetube.search('Python', { type: 'playlist', limit: 5 });
       for await (const video of videos) {
         console.log(video);
       }
-      console.timeEnd('search');
       break;
     }
     case '4': {
@@ -41,6 +40,11 @@ const test = async (q?: string) => {
       }
       break;
     }
+    case '5': {
+      const playlist = scrapetube.getPlaylist('VbmIL9HZNEs');
+      console.log(playlist.next());
+      break;
+    }
     // No default
   }
 };
@@ -49,7 +53,11 @@ const title = 'Press 1 to test channel search, press 2 to test video search, pre
 
 const run = async () => {
   const input = await coraline.input.create({ title });
-  await test(input);
+  try {
+    await test(input);
+  } catch {
+    //
+  }
   void run();
 };
 

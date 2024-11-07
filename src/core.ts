@@ -2,13 +2,14 @@ import type { Client, ClientResponse } from './interfaces/client.js';
 import type { SearchSelector, YTResult } from './search.js';
 import type { ChannelSelector } from './channel.js';
 import type { InitialData } from './interfaces/response.js';
-import coraline, { getEntries } from 'coraline';
+import coraline, { getEntries, temporaryFile } from 'coraline';
 import { clientResponseSchema } from './schemas/client.js';
 import { initialDataSchema } from './schemas/response.js';
+import fs from 'fs/promises';
 
 type SelectorKeys = SearchSelector | ChannelSelector | 'playlistVideoRenderer';
 
-export type SelectorList = 'contents' | 'playlistVideoRenderer';
+export type SelectorList = 'contents' | 'playlistVideoListRenderer';
 
 interface VideoOpts<K extends SelectorList> {
   api_endpoint: string;
@@ -39,7 +40,7 @@ export const getVideos = async function* <T extends keyof YTResult, K extends Se
   url: string,
   { api_endpoint, selectorList, selectorItem, sleep, sortBy, limit = 25 }: VideoOpts<K>,
 ): AsyncGenerator<YTResult[T]> {
-  /** Is first has been replaced by checking if there is data as it's the same thing but simpler. */
+  let isFirst = true;
   let quit = false;
   let count = 0;
   let data: InitialData[K] | undefined;
@@ -48,11 +49,7 @@ export const getVideos = async function* <T extends keyof YTResult, K extends Se
   let client: Client | undefined;
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   while (true) {
-    if (data) {
-      if (!apiKey || !nextData || !client) throw new Error('Internal error: Incorrect loop, please report it to the github repository issue!');
-      data = await getAjaxData(api_endpoint, apiKey, nextData, client);
-      nextData = getNextData(data);
-    } else {
+    if (isFirst) {
       const html = await getInitialData(url);
       const res = JSON.parse(getJsonFromHtml(html, 'INNERTUBE_CONTEXT', 2, '"}},') + '"}}') as ClientResponse;
       await clientResponseSchema.validateAsync(res);
@@ -64,10 +61,15 @@ export const getVideos = async function* <T extends keyof YTResult, K extends Se
       await initialDataSchema.validateAsync(response);
       data = searchDict(response, selectorList).next();
       nextData = getNextData(data, sortBy);
+      isFirst = false;
       if (sortBy && sortBy !== 'newest') continue;
+    } else {
+      if (!apiKey || !nextData || !client) throw new Error('Internal error: Incorrect loop, please report it to the github repository issue!');
+      data = await getAjaxData(api_endpoint, apiKey, nextData, client);
+      nextData = getNextData(data);
     }
     for (const result of searchDict(data, selectorItem)) {
-      count += 1;
+      count++;
       yield result;
       if (count === limit) {
         quit = true;
@@ -95,8 +97,9 @@ const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: NextD
     },
   });
   if (!res.ok) throw new Error(`${res.status.toString()}: ${res.statusText}`);
-  const data = await res.json();
-  /** @TODO API RESPONSE IS DIFFERENT FROM INITIAL, ADD A VALIDATION HERE. */
+  const data = (await res.json()) as InitialData;
+  await initialDataSchema.validateAsync(data);
+  console.log('New api request');
   return data;
 };
 
@@ -114,7 +117,7 @@ const getJsonFromHtml = (html: string, key: string, numChars = 2, stop = '"') =>
   return html.slice(begin, end);
 };
 
-const getNextData = <K extends SelectorList>(data: InitialData[K], sortBy?: ChannelSort) => {
+const getNextData = (data, sortBy?: ChannelSort) => {
   let endpoint;
   // eslint-disable-next-line unicorn/prefer-ternary
   if (sortBy && sortBy !== 'newest') {

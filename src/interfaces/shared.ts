@@ -46,6 +46,7 @@ export interface NavigationEndpoint {
   }[];
   playerParams?: string;
   reelWatchEndpoint?: {
+    loggingContext?: object;
     overlay: object;
     params?: string;
     playerExtraUrlParams?: {
@@ -55,7 +56,9 @@ export interface NavigationEndpoint {
     playerParams?: string;
     sequenceParams: string;
     sequenceProvider: string;
+    startTimeSeconds?: number;
     thumbnail: Thumbnail;
+    ustreamerConfig?: string;
     videoId?: string;
     watchEndpointSupportedOnesieConfig?: {
       html5PlaybackOnesieConfig: {
@@ -76,6 +79,7 @@ export interface NavigationEndpoint {
       };
     };
   };
+  startTimeSeconds?: number;
   videoId?: string;
   watchEndpoint?: {
     params?: string;
@@ -84,6 +88,7 @@ export interface NavigationEndpoint {
       value: string;
     }[];
     playerParams?: string;
+    startTimeSeconds?: number;
     videoId?: string;
     watchEndpointSupportedOnesieConfig?: {
       html5PlaybackOnesieConfig: {

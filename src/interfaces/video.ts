@@ -3,7 +3,7 @@
  * Do not modify this file manually
  */
 
-import { Run, NavigationEndpoint, Thumbnail, CommandMetadata, WebCommandMetadata, Badges, LongBylineText, ShortBylineText } from './shared';
+import { Run, NavigationEndpoint, Thumbnail, CommandMetadata, WebCommandMetadata, Badges, LongBylineText, ShortBylineText } from './shared.js';
 
 export interface Accessibility {
   accessibilityData: AccessibilityData;
@@ -71,6 +71,8 @@ export interface Snippet {
   maxOneLine?: boolean;
   snippetHoverText: AccessibilityDataWithObject;
   snippetText: AccessibilityDataWithObject;
+  snippetTimestamp?: object;
+  timestampEndpoint?: object;
 }
 
 export interface Title {

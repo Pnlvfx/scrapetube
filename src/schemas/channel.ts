@@ -1,10 +1,6 @@
 import Joi from 'joi';
 import { badgesSchema, longBylineTextSchema, navigationEndpointSchema, runSchema, shortBylineTextSchema, thumbnailSchema } from './shared.js';
 
-export const channelTitleSchema = Joi.object({
-  simpleText: Joi.string().required(),
-}).meta({ className: 'ChannelTitle' });
-
 export const videoCountTextSchema = Joi.object({
   accessibility: Joi.object({
     accessibilityData: Joi.object({
@@ -42,13 +38,13 @@ const descriptionSnippet = {
   runs: Joi.array().items(runSchema).required(),
 };
 
-export const subscriberCountText = {
+export const simpleText = {
   simpleText: Joi.string().required(),
 };
 
 export const channelSchema = Joi.object({
   channelId: Joi.string().required(),
-  title: channelTitleSchema.required(),
+  title: Joi.object(simpleText).required(),
   navigationEndpoint: navigationEndpointSchema.required(),
   thumbnail: thumbnailSchema.required(),
   descriptionSnippet: Joi.object(descriptionSnippet),
@@ -56,7 +52,7 @@ export const channelSchema = Joi.object({
   videoCountText: videoCountTextSchema.required(),
   subscriptionButton: subscriptionButtonSchema.required(),
   ownerBadges: badgesSchema,
-  subscriberCountText: Joi.object(subscriberCountText),
+  subscriberCountText: Joi.object(simpleText),
   subscribeButton: subscribeButtonSchema.required(),
   trackingParams: Joi.string().required(),
   longBylineText: longBylineTextSchema.required(),

@@ -3,13 +3,13 @@
  * Do not modify this file manually
  */
 
-import { CommandMetadata } from './shared';
-import { Channel } from './channel';
-import { Playlist } from './playlist';
-import { Video } from './video';
+import { CommandMetadata } from './shared.js';
+import { Channel } from './channel.js';
+import { Playlist } from './playlist.js';
+import { Video } from './video.js';
 
 export interface InitialData {
-  contents: {
+  contents?: {
     twoColumnSearchResultsRenderer: {
       primaryContents: {
         sectionListRenderer: {
@@ -28,24 +28,7 @@ export interface InitialData {
               };
               trigger: string;
             };
-            itemSectionRenderer?: {
-              contents: {
-                adSlotRenderer?: {
-                  adSlotMetadata: object;
-                  enablePacfLoggingWeb: boolean;
-                  fulfillmentContent: object;
-                  trackingParams: string;
-                };
-                channelRenderer?: Channel;
-                lockupViewModel?: object;
-                playlistRenderer?: Playlist;
-                radioRenderer?: object;
-                reelShelfRenderer?: object;
-                shelfRenderer?: object;
-                videoRenderer?: Video;
-              }[];
-              trackingParams: string;
-            };
+            itemSectionRenderer?: ItemSection;
           }[];
           hideBottomSeparator: boolean;
           subMenu: object;
@@ -65,15 +48,35 @@ export interface InitialData {
     };
   };
   onResponseReceivedCommands?: {
-    adsControlFlowOpportunityReceivedCommand: {
+    adsControlFlowOpportunityReceivedCommand?: {
       adSlotAndLayoutMetadata?: object[];
       enablePacfLoggingWeb?: boolean;
       isInitialLoad?: boolean;
-      opportunityType: string;
+      opportunityType?: string;
+    };
+    appendContinuationItemsAction?: {
+      continuationItems: {
+        continuationItemRenderer?: {
+          continuationEndpoint: {
+            clickTrackingParams: string;
+            commandMetadata: CommandMetadata;
+            continuationCommand: {
+              request: string;
+              token: string;
+            };
+          };
+          loggingDirectives: {
+            trackingParams: string;
+          };
+          trigger: string;
+        };
+        itemSectionRenderer?: ItemSection;
+      }[];
+      targetId?: string;
     };
     clickTrackingParams: string;
   }[];
-  refinements: string[];
+  refinements?: string[];
   responseContext: {
     mainAppWebResponseContext: {
       loggedOut: boolean;
@@ -88,13 +91,34 @@ export interface InitialData {
     }[];
     webResponseContextExtensionData: {
       hasDecorated: boolean;
-      ytConfigData: {
+      ytConfigData?: {
         rootVisualElementType: number;
         visitorData: string;
       };
     };
   };
-  targetId: string;
+  targetId?: string;
   topbar: object;
+  trackingParams: string;
+}
+
+export interface ItemSection {
+  contents: {
+    adSlotRenderer?: {
+      adSlotMetadata: object;
+      enablePacfLoggingWeb: boolean;
+      fulfillmentContent: object;
+      trackingParams: string;
+    };
+    channelRenderer?: Channel;
+    horizontalCardListRenderer?: object;
+    lockupViewModel?: object;
+    movieRenderer?: object;
+    playlistRenderer?: Playlist;
+    radioRenderer?: object;
+    reelShelfRenderer?: object;
+    shelfRenderer?: object;
+    videoRenderer?: Video;
+  }[];
   trackingParams: string;
 }
