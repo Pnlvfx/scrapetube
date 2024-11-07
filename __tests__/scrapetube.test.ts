@@ -4,7 +4,7 @@ import coraline from 'coraline';
 
 describe('The coraline download from url', () => {
   it('Should search a query on youtube.', async () => {
-    const output = scrapetube.search('Cars', 'video');
+    const output = scrapetube.search('Cars');
     for await (const video of output) {
       coraline.log(video);
     }

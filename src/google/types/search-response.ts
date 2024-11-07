@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/class-name */
-export interface Schema$PageInfo {
+interface Schema$PageInfo {
   /**
    * The number of results included in the API response.
    */
@@ -10,7 +10,7 @@ export interface Schema$PageInfo {
   totalResults?: number | null;
 }
 
-export interface Schema$Thumbnail {
+interface Schema$Thumbnail {
   /**
    * (Optional) Height of the thumbnail image.
    */
@@ -25,7 +25,7 @@ export interface Schema$Thumbnail {
   width?: number | null;
 }
 
-export interface Schema$ThumbnailDetails {
+interface Schema$ThumbnailDetails {
   /**
    * The default image for this resource.
    */
@@ -48,7 +48,7 @@ export interface Schema$ThumbnailDetails {
   standard?: Schema$Thumbnail;
 }
 
-export interface Schema$SearchResultSnippet {
+interface Schema$SearchResultSnippet {
   /**
    * The value that YouTube uses to uniquely identify the channel that published the resource that the search result identifies.
    */
@@ -79,7 +79,7 @@ export interface Schema$SearchResultSnippet {
   title?: string | null;
 }
 
-export interface Schema$ResourceId {
+interface Schema$ResourceId {
   /**
    * The ID that YouTube uses to uniquely identify the referred resource, if that resource is a channel. This property is only present if the resourceId.kind value is youtube#channel.
    */
@@ -101,7 +101,7 @@ export interface Schema$ResourceId {
 /**
  * A search result contains information about a YouTube video, channel, or playlist that matches the search parameters specified in an API request. While a search result points to a uniquely identifiable resource, like a video, it does not have its own persistent data.
  */
-export interface Schema$SearchResult {
+interface Schema$SearchResult {
   /**
    * Etag of this resource.
    */

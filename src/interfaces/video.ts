@@ -3,7 +3,17 @@
  * Do not modify this file manually
  */
 
-import { Run, NavigationEndpoint, Thumbnail, CommandMetadata, WebCommandMetadata, Badges, LongBylineText, ShortBylineText } from './shared.js';
+import {
+  Run,
+  NavigationEndpoint,
+  Thumbnail,
+  CommandMetadata,
+  BrowseEndpoint,
+  WebCommandMetadata,
+  Badges,
+  LongBylineText,
+  ShortBylineText,
+} from './shared.js';
 
 export interface Accessibility {
   accessibilityData: AccessibilityData;
@@ -63,10 +73,6 @@ export interface OwnerText {
   runs: Run[];
 }
 
-export interface PublishedTimeText {
-  simpleText: string;
-}
-
 export interface Snippet {
   maxOneLine?: boolean;
   snippetHoverText: AccessibilityDataWithObject;
@@ -92,10 +98,7 @@ export interface Video {
         commandContext: {
           onTap: {
             innertubeCommand: {
-              browseEndpoint: {
-                browseId: string;
-                canonicalBaseUrl?: string;
-              };
+              browseEndpoint: BrowseEndpoint;
               clickTrackingParams: string;
               commandMetadata: {
                 apiUrl?: string;
@@ -121,7 +124,9 @@ export interface Video {
   navigationEndpoint: NavigationEndpoint;
   ownerBadges?: Badges;
   ownerText: OwnerText;
-  publishedTimeText?: PublishedTimeText;
+  publishedTimeText?: {
+    simpleText: string;
+  };
   richThumbnail?: {
     movingThumbnailRenderer: object;
   };

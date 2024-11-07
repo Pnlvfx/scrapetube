@@ -3,6 +3,22 @@ import type { Channel } from './interfaces/channel.js';
 import type { Playlist } from './interfaces/playlist.js';
 import { getVideos } from './core.js';
 
+export type SearchSelector = (typeof results_type_map)[keyof typeof results_type_map][1];
+
+export interface SearchOptions<T extends keyof YTResult | undefined> {
+  limit?: number;
+  sleep?: number;
+  sortBy?: keyof typeof sort_by_map;
+  type?: T;
+}
+
+export interface YTResult {
+  video: Video;
+  channel: Channel;
+  playlist: Playlist;
+  movie: Video;
+}
+
 const api_endpoint = 'https://www.youtube.com/youtubei/v1/search';
 
 const sort_by_map = {
@@ -18,22 +34,6 @@ const results_type_map = {
   playlist: ['D', 'playlistRenderer'],
   movie: ['E', 'videoRenderer'],
 } as const;
-
-export type SearchSelector = (typeof results_type_map)[keyof typeof results_type_map][1];
-
-export interface SearchOptions<T extends keyof YTResult | undefined> {
-  limit?: number;
-  sleep?: number;
-  sortBy?: keyof typeof sort_by_map;
-  type?: T;
-}
-
-export interface YTResult {
-  video: Video;
-  channel: Channel;
-  playlist: Playlist;
-  movie: unknown;
-}
 
 /** Function overload for when options.type is not provided, used for providing typed response. */
 export function search<T extends undefined>(query: string, options?: SearchOptions<T>): AsyncGenerator<Awaited<YTResult['video']>, void, unknown>;

@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import {
   badgesSchema,
+  browseEndpointSchema,
   commandMetadata,
   longBylineTextSchema,
   navigationEndpointSchema,
@@ -138,7 +139,7 @@ export const videoSchema = Joi.object({
                 apiUrl: Joi.string(),
                 webCommandMetadata: webCommandMetadataSchema,
               }).required(),
-              browseEndpoint: Joi.object({ browseId: Joi.string().required(), canonicalBaseUrl: Joi.string() }).required(),
+              browseEndpoint: browseEndpointSchema.required(),
             }).required(),
           }).required(),
         }).required(),

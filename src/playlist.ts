@@ -1,5 +1,7 @@
 import { getVideos } from './core.js';
 
+export type PlaylistSelector = 'playlistVideoRenderer';
+
 export interface PlaylistOptions {
   limit?: number;
   sleep?: number;

@@ -33,10 +33,9 @@ const test = async (q?: string) => {
       break;
     }
     case '4': {
-      const latestVideos = scrapetube.getChannel({ channelUsername: 'Reuters' });
+      const latestVideos = scrapetube.getChannel({ channelUsername: 'Football', limit: 100, sortBy: 'popular' });
       for await (const video of latestVideos) {
-        coraline.log(video);
-        break;
+        console.log(video.channelId);
       }
       break;
     }
@@ -53,11 +52,7 @@ const title = 'Press 1 to test channel search, press 2 to test video search, pre
 
 const run = async () => {
   const input = await coraline.input.create({ title });
-  try {
-    await test(input);
-  } catch {
-    //
-  }
+  await test(input);
   void run();
 };
 

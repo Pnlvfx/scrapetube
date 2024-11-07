@@ -18,10 +18,11 @@ export const commandMetadata = Joi.object({
   webCommandMetadata: webCommandMetadataSchema.required(),
 }).meta({ className: 'CommandMetadata' });
 
-const browseEndpoint = {
+export const browseEndpointSchema = Joi.object({
   browseId: Joi.string().required(),
+  params: Joi.string(),
   canonicalBaseUrl: Joi.string(),
-};
+}).meta({ className: 'BrowseEndpoint' });
 
 const signInEndpoint = {
   nextEndpoint: Joi.object({
@@ -68,7 +69,7 @@ export const navigationEndpointSchema = Joi.object({
   ...watchEndpoint,
   clickTrackingParams: Joi.string(),
   commandMetadata,
-  browseEndpoint: Joi.object(browseEndpoint), // for search channel
+  browseEndpoint: browseEndpointSchema, // for search channel
   watchEndpoint: Joi.object(watchEndpoint),
   signInEndpoint: Joi.object(signInEndpoint),
   reelWatchEndpoint: Joi.object({

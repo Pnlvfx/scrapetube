@@ -5,4 +5,7 @@
 
 export interface Playlist {
   playlistId: string;
+  title: {
+    simpleText: string;
+  };
 }

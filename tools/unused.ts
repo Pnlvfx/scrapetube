@@ -2,7 +2,37 @@ import { findUnusedExports } from 'coraline';
 
 const unused = findUnusedExports({
   ignoreFiles: ['eslint.config.js', 'jest.config.ts'],
-  ignoreVars: [],
+  ignoreVars: [
+    'ChannelOptions',
+    'PlaylistOptions',
+    'SearchOptions',
+    'ChipCloudChipRenderer',
+    'ItemSection',
+    'MetadataBadgeRenderer',
+    'videoCountTextSchema',
+    'subscribeButtonSchema',
+    'continuationEndpoint',
+    'accessibilityDataSchema',
+    'ownerTextSchema',
+    'menuRendererSchema',
+    'detailedMetadataSnippetsSchema',
+    'subscriptionButtonSchema',
+    'itemSectionRendererSchema',
+    'viewCountTextSchema',
+    'inlinePlaybackEndpointSchema',
+    'avatarViewModelSchema',
+    'channelThumbnailWithLinkRendererSchema',
+    'titleSchema',
+    'metadataBadgeRendererSchema',
+    'chipCloudChipRenderer',
+    'initialDataContentsSchema',
+    'snippetSchema',
+    'clientSchema',
+    'feedFilterChipBarRenderer',
+    'accessibilitySchema',
+    'accessibilityDataWithObjectSchema',
+    'lengthTextSchema',
+  ],
 });
 
 if (unused) {

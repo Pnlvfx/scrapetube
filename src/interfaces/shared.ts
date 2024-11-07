@@ -5,6 +5,12 @@
 
 export type Badges = MetadataBadgeRenderer[];
 
+export interface BrowseEndpoint {
+  browseId: string;
+  canonicalBaseUrl?: string;
+  params?: string;
+}
+
 export interface CommandMetadata {
   webCommandMetadata: WebCommandMetadata;
 }
@@ -33,10 +39,7 @@ export interface MetadataBadgeRenderer {
 }
 
 export interface NavigationEndpoint {
-  browseEndpoint?: {
-    browseId: string;
-    canonicalBaseUrl?: string;
-  };
+  browseEndpoint?: BrowseEndpoint;
   clickTrackingParams?: string;
   commandMetadata?: CommandMetadata;
   params?: string;

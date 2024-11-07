@@ -3,50 +3,47 @@
  * Do not modify this file manually
  */
 
-import { CommandMetadata } from './shared.js';
+import { CommandMetadata, NavigationEndpoint } from './shared.js';
 import { Channel } from './channel.js';
 import { Playlist } from './playlist.js';
 import { Video } from './video.js';
 
-export interface InitialData {
-  contents?: {
-    twoColumnSearchResultsRenderer: {
-      primaryContents: {
-        sectionListRenderer: {
-          contents: {
-            continuationItemRenderer?: {
-              continuationEndpoint: {
-                clickTrackingParams: string;
-                commandMetadata: CommandMetadata;
-                continuationCommand: {
-                  request: string;
-                  token: string;
-                };
-              };
-              loggingDirectives: {
-                trackingParams: string;
-              };
-              trigger: string;
-            };
-            itemSectionRenderer?: ItemSection;
-          }[];
-          hideBottomSeparator: boolean;
-          subMenu: object;
-          targetId: string;
-          trackingParams: string;
-        };
-      };
-    };
+export interface ChipCloudChipRenderer {
+  text: {
+    simpleText: string;
   };
-  estimatedResults: string;
-  header: {
-    searchHeaderRenderer: {
+}
+
+export interface ContinuationEndpoint {
+  clickTrackingParams: string;
+  commandMetadata: CommandMetadata;
+  continuationCommand: {
+    request: string;
+    token: string;
+  };
+}
+
+export interface FeedFilterChipBarRenderer {
+  contents: {
+    chipCloudChipRenderer: ChipCloudChipRenderer;
+  }[];
+}
+
+export interface InitialData {
+  contents?: InitialDataContents;
+  estimatedResults?: string;
+  header?: {
+    pageHeaderRenderer?: Record<string, never>;
+    searchHeaderRenderer?: {
       aboutTheseResultsButton: object;
       chipBar?: object;
       searchFilterButton: object;
       trackingParams: string;
     };
   };
+  metadata?: Record<string, never>;
+  microformat?: Record<string, never>;
+  onResponseReceivedActions?: Record<string, never>[];
   onResponseReceivedCommands?: {
     adsControlFlowOpportunityReceivedCommand?: {
       adSlotAndLayoutMetadata?: object[];
@@ -57,15 +54,8 @@ export interface InitialData {
     appendContinuationItemsAction?: {
       continuationItems: {
         continuationItemRenderer?: {
-          continuationEndpoint: {
-            clickTrackingParams: string;
-            commandMetadata: CommandMetadata;
-            continuationCommand: {
-              request: string;
-              token: string;
-            };
-          };
-          loggingDirectives: {
+          continuationEndpoint: ContinuationEndpoint;
+          loggingDirectives?: {
             trackingParams: string;
           };
           trigger: string;
@@ -82,6 +72,7 @@ export interface InitialData {
       loggedOut: boolean;
       trackingParam: string;
     };
+    maxAgeSeconds?: number;
     serviceTrackingParams: {
       params: {
         key: string;
@@ -98,8 +89,75 @@ export interface InitialData {
     };
   };
   targetId?: string;
-  topbar: object;
+  topbar?: object;
   trackingParams: string;
+}
+
+export interface InitialDataContents {
+  twoColumnBrowseResultsRenderer?: {
+    tabs: {
+      expandableTabRenderer?: Record<string, never>;
+      tabRenderer?: {
+        content?: {
+          richGridRenderer: {
+            contents: {
+              adSlotRenderer?: {
+                adSlotMetadata: object;
+                enablePacfLoggingWeb: boolean;
+                fulfillmentContent: object;
+                trackingParams: string;
+              };
+              channelRenderer?: Channel;
+              continuationItemRenderer?: {
+                continuationEndpoint: ContinuationEndpoint;
+                loggingDirectives?: {
+                  trackingParams: string;
+                };
+                trigger: string;
+              };
+              horizontalCardListRenderer?: object;
+              lockupViewModel?: object;
+              movieRenderer?: object;
+              playlistRenderer?: Playlist;
+              radioRenderer?: object;
+              reelShelfRenderer?: object;
+              richItemRenderer?: object;
+              shelfRenderer?: object;
+              videoRenderer?: Video;
+            }[];
+            header: {
+              feedFilterChipBarRenderer: FeedFilterChipBarRenderer;
+            };
+            trackingParams: string;
+          };
+        };
+        endpoint: NavigationEndpoint;
+        selected?: boolean;
+        title: string;
+        trackingParams: string;
+      };
+    }[];
+  };
+  twoColumnSearchResultsRenderer?: {
+    primaryContents: {
+      sectionListRenderer: {
+        contents: {
+          continuationItemRenderer?: {
+            continuationEndpoint: ContinuationEndpoint;
+            loggingDirectives?: {
+              trackingParams: string;
+            };
+            trigger: string;
+          };
+          itemSectionRenderer?: ItemSection;
+        }[];
+        hideBottomSeparator: boolean;
+        subMenu: object;
+        targetId: string;
+        trackingParams: string;
+      };
+    };
+  };
 }
 
 export interface ItemSection {
@@ -111,12 +169,20 @@ export interface ItemSection {
       trackingParams: string;
     };
     channelRenderer?: Channel;
+    continuationItemRenderer?: {
+      continuationEndpoint: ContinuationEndpoint;
+      loggingDirectives?: {
+        trackingParams: string;
+      };
+      trigger: string;
+    };
     horizontalCardListRenderer?: object;
     lockupViewModel?: object;
     movieRenderer?: object;
     playlistRenderer?: Playlist;
     radioRenderer?: object;
     reelShelfRenderer?: object;
+    richItemRenderer?: object;
     shelfRenderer?: object;
     videoRenderer?: Video;
   }[];

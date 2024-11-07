@@ -20,13 +20,11 @@ export interface Channel {
   };
   subscriptionButton: SubscriptionButton;
   thumbnail: Thumbnail;
-  title: ChannelTitle;
+  title: {
+    simpleText: string;
+  };
   trackingParams: string;
   videoCountText: VideoCountText;
-}
-
-export interface ChannelTitle {
-  simpleText: string;
 }
 
 export interface SubscribeButton {
