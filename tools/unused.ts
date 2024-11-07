@@ -8,7 +8,6 @@ const unused = findUnusedExports({
     'SearchOptions',
     'ChipCloudChipRenderer',
     'ItemSection',
-    'MetadataBadgeRenderer',
     'videoCountTextSchema',
     'subscribeButtonSchema',
     'continuationEndpoint',
@@ -32,6 +31,8 @@ const unused = findUnusedExports({
     'accessibilitySchema',
     'accessibilityDataWithObjectSchema',
     'lengthTextSchema',
+    'initialDataSchema',
+    'thumbnailSchema',
   ],
 });
 

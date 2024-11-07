@@ -60,7 +60,7 @@ export interface NavigationEndpoint {
     sequenceParams: string;
     sequenceProvider: string;
     startTimeSeconds?: number;
-    thumbnail: Thumbnail;
+    thumbnail: ThumbnailWrapper;
     ustreamerConfig?: string;
     videoId?: string;
     watchEndpointSupportedOnesieConfig?: {
@@ -124,12 +124,14 @@ export interface ShortBylineText {
 }
 
 export interface Thumbnail {
+  height: number;
+  url: string;
+  width: number;
+}
+
+export interface ThumbnailWrapper {
   isOriginalAspectRatio?: boolean;
-  thumbnails: {
-    height: number;
-    url: string;
-    width: number;
-  }[];
+  thumbnails: Thumbnail[];
 }
 
 export interface WebCommandMetadata {

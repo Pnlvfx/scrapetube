@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { badgesSchema, longBylineTextSchema, navigationEndpointSchema, runSchema, shortBylineTextSchema, thumbnailSchema } from './shared.js';
+import { badgesSchema, longBylineTextSchema, navigationEndpointSchema, runSchema, shortBylineTextSchema, thumbnailWrapperSchema } from './shared.js';
 
 export const videoCountTextSchema = Joi.object({
   accessibility: Joi.object({
@@ -46,7 +46,7 @@ export const channelSchema = Joi.object({
   channelId: Joi.string().required(),
   title: Joi.object(simpleText).required(),
   navigationEndpoint: navigationEndpointSchema.required(),
-  thumbnail: thumbnailSchema.required(),
+  thumbnail: thumbnailWrapperSchema.required(),
   descriptionSnippet: Joi.object(descriptionSnippet),
   shortBylineText: shortBylineTextSchema.required(),
   videoCountText: videoCountTextSchema.required(),

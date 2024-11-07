@@ -3,7 +3,7 @@
  * Do not modify this file manually
  */
 
-import { Run, LongBylineText, NavigationEndpoint, Badges, ShortBylineText, Thumbnail } from './shared.js';
+import { Run, LongBylineText, NavigationEndpoint, Badges, ShortBylineText, ThumbnailWrapper } from './shared.js';
 
 export interface Channel {
   channelId: string;
@@ -19,7 +19,7 @@ export interface Channel {
     simpleText: string;
   };
   subscriptionButton: SubscriptionButton;
-  thumbnail: Thumbnail;
+  thumbnail: ThumbnailWrapper;
   title: {
     simpleText: string;
   };

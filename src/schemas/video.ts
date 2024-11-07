@@ -7,7 +7,7 @@ import {
   navigationEndpointSchema,
   runSchema,
   shortBylineTextSchema,
-  thumbnailSchema,
+  thumbnailWrapperSchema,
   webCommandMetadataSchema,
 } from './shared.js';
 import { simpleText } from './channel.js';
@@ -63,7 +63,7 @@ export const menuRendererSchema = Joi.object({
 
 export const channelThumbnailWithLinkRendererSchema = Joi.object({
   channelThumbnailWithLinkRenderer: Joi.object({
-    thumbnail: thumbnailSchema.required(),
+    thumbnail: thumbnailWrapperSchema.required(),
     navigationEndpoint: navigationEndpointSchema.required(),
     accessibility: Joi.object(accessibility),
   }).required(),
@@ -96,7 +96,7 @@ export const avatarViewModelSchema = Joi.object({
 
 export const videoSchema = Joi.object({
   videoId: Joi.string().required(),
-  thumbnail: thumbnailSchema.required(),
+  thumbnail: thumbnailWrapperSchema.required(),
   title: titleSchema.required(),
   longBylineText: longBylineTextSchema.required(),
   publishedTimeText: simpleText,

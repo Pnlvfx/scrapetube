@@ -53,17 +53,15 @@ const reelWatchEndpointOverlay = undefined;
 const loggingContext = undefined;
 
 export const thumbnailSchema = Joi.object({
-  thumbnails: Joi.array()
-    .items(
-      Joi.object({
-        url: Joi.string().required(),
-        width: Joi.number().required(),
-        height: Joi.number().required(),
-      }),
-    )
-    .required(),
-  isOriginalAspectRatio: Joi.boolean(),
+  url: Joi.string().required(),
+  width: Joi.number().required(),
+  height: Joi.number().required(),
 }).meta({ className: 'Thumbnail' });
+
+export const thumbnailWrapperSchema = Joi.object({
+  thumbnails: Joi.array().items(thumbnailSchema).required(),
+  isOriginalAspectRatio: Joi.boolean(),
+}).meta({ className: 'ThumbnailWrapper' });
 
 export const navigationEndpointSchema = Joi.object({
   ...watchEndpoint,
@@ -74,7 +72,7 @@ export const navigationEndpointSchema = Joi.object({
   signInEndpoint: Joi.object(signInEndpoint),
   reelWatchEndpoint: Joi.object({
     ...watchEndpoint,
-    thumbnail: thumbnailSchema.required(),
+    thumbnail: thumbnailWrapperSchema.required(),
     overlay: Joi.object(reelWatchEndpointOverlay).required(),
     sequenceProvider: Joi.string().required(),
     sequenceParams: Joi.string().required(),

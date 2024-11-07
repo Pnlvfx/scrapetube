@@ -6,7 +6,7 @@
 import {
   Run,
   NavigationEndpoint,
-  Thumbnail,
+  ThumbnailWrapper,
   CommandMetadata,
   BrowseEndpoint,
   WebCommandMetadata,
@@ -44,7 +44,7 @@ export interface ChannelThumbnailWithLinkRenderer {
   channelThumbnailWithLinkRenderer: {
     accessibility?: object;
     navigationEndpoint: NavigationEndpoint;
-    thumbnail: Thumbnail;
+    thumbnail: ThumbnailWrapper;
   };
 }
 
@@ -134,7 +134,7 @@ export interface Video {
   shortBylineText: ShortBylineText;
   shortViewCountText: AccessibilityDataWithObject;
   showActionMenu: boolean;
-  thumbnail: Thumbnail;
+  thumbnail: ThumbnailWrapper;
   thumbnailOverlays: object[];
   title: Title;
   trackingParams: string;
