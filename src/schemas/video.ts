@@ -100,7 +100,7 @@ export const videoSchema = Joi.object({
   title: titleSchema.required(),
   longBylineText: longBylineTextSchema.required(),
   publishedTimeText: simpleText,
-  lengthText: lengthTextSchema.required(),
+  lengthText: lengthTextSchema,
   viewCountText: viewCountTextSchema.required(),
   navigationEndpoint: navigationEndpointSchema.required(),
   badges: badgesSchema,
