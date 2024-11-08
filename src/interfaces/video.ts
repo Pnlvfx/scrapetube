@@ -118,7 +118,7 @@ export interface Video {
   detailedMetadataSnippets?: DetailedMetadataSnippets;
   expandableMetadata?: object;
   inlinePlaybackEndpoint?: InlinePlaybackEndpoint;
-  lengthText: LengthText;
+  lengthText?: LengthText;
   longBylineText: LongBylineText;
   menu: MenuRenderer;
   navigationEndpoint: NavigationEndpoint;
