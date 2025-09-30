@@ -5,14 +5,12 @@ import { getPlaylist } from './playlist.js';
 
 /** CHECK THE README TO SEE HOW TO USE THE SEARCH */
 
-const scrapetube = {
+export const scrapetube = {
   search,
   getChannel,
   getPlaylist,
   searchWithGoogle,
 };
-
-export default scrapetube;
 
 export type * from './interfaces/channel.js';
 export type * from './interfaces/video.js';

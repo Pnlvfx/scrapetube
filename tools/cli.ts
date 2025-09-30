@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import coraline from 'coraline';
-import scrapetube from './scrapetube.js';
+import scrapetube from '../src/scrapetube.js';
 
 const test = async (q?: string) => {
   if (!q) {
