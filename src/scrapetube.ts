@@ -11,8 +11,3 @@ export const scrapetube = {
   getPlaylist,
   searchWithGoogle,
 };
-
-export type * from './interfaces/channel.js';
-export type * from './interfaces/video.js';
-export type * from './interfaces/playlist.js';
-export type * from './interfaces/shared.js';

@@ -1,6 +1,7 @@
+/* eslint-disable no-restricted-properties */
 import type { Params$Resource$Search$List } from './types/search-options.js';
 import type { Schema$SearchListResponse } from './types/search-response.js';
-import { getEntries } from 'coraline';
+import { getEntries } from '@goatjs/core/object';
 
 const searchList = async (params?: Params$Resource$Search$List) => {
   let separator = '?';

@@ -1,5 +1,5 @@
 {
-  "name": "scrapetube",
+  "name": "@goatjs/scrapetube",
   "description": "Node package to get youtube search api without keys.",
   "version": "1.0.0",
   "author": {
@@ -35,15 +35,27 @@
     "README.md"
   ],
   "devDependencies": {
-    "@types/node": "^24.6.0",
-    "eslint": "^9.36.0",
+    "@goatjs/core": "^1.21.0",
+    "@goatjs/dbz": "^1.21.0",
+    "@goatjs/node": "^1.21.0",
+    "@goatjs/node-eslint": "^1.14.0",
+    "@goatjs/rimraf": "^1.21.0",
+    "@goatjs/ts-unused-exports": "^1.21.0",
+    "@goatjs/typescript-config": "^1.21.0",
+    "@types/node": "^24.7.2",
+    "eslint": "^9.37.0",
     "husky": "^9.1.7",
     "jest": "^30.2.0",
     "prettier": "^3.6.2",
-    "tsx": "^4.20.6",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "zod": "^4.1.12"
+  },
+  "peerDependencies": {
+    "@goatjs/core": "*",
+    "zod": "*"
   },
   "packageManager": "yarn@4.10.3+sha512.c38cafb5c7bb273f3926d04e55e1d8c9dfa7d9c3ea1f36a4868fa028b9e5f72298f0b7f401ad5eb921749eb012eb1c3bb74bf7503df3ee43fd600d14a018266f"
 }

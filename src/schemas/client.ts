@@ -1,34 +1,35 @@
-import Joi from 'joi';
+import * as z from 'zod';
 
-export const clientSchema = Joi.object({
-  hl: Joi.string().required(),
-  gl: Joi.string().required(),
-  remoteHost: Joi.string().required(),
-  deviceMake: Joi.string().required(),
-  deviceModel: Joi.string().allow('').required(),
-  visitorData: Joi.string().required(),
-  userAgent: Joi.string().required(),
-  clientName: Joi.string().required(),
-  clientVersion: Joi.string().required(),
-  osName: Joi.string().required(),
-  osVersion: Joi.string().required(),
-  originalUrl: Joi.string().required(),
-  platform: Joi.string().required(),
-  clientFormFactor: Joi.string().required(),
-  configInfo: Joi.object({
-    appInstallData: Joi.string().required(),
-  }).required(),
-  userInterfaceTheme: Joi.string().required(),
-  browserName: Joi.string().required(),
-  browserVersion: Joi.string().required(),
-  acceptHeader: Joi.string().required(),
-  deviceExperimentId: Joi.string().required(),
-  rolloutToken: Joi.string(),
-}).meta({ className: 'Client' });
+const clientSchema = z.strictObject({
+  hl: z.string(),
+  gl: z.string(),
+  remoteHost: z.string(),
+  deviceMake: z.string(),
+  deviceModel: z.string(),
+  visitorData: z.string(),
+  userAgent: z.string(),
+  clientName: z.string(),
+  clientVersion: z.string(),
+  osName: z.string(),
+  osVersion: z.string(),
+  originalUrl: z.string(),
+  platform: z.string(),
+  clientFormFactor: z.string(),
+  configInfo: z.strictObject({ appInstallData: z.string() }),
+  userInterfaceTheme: z.string(),
+  browserName: z.string(),
+  browserVersion: z.string(),
+  acceptHeader: z.string(),
+  deviceExperimentId: z.string(),
+  rolloutToken: z.string(),
+});
 
-export const clientResponseSchema = Joi.object({
-  client: clientSchema.required(),
-  user: Joi.object({ lockedSafetyMode: Joi.boolean().required() }).required(),
-  request: Joi.object({ useSsl: Joi.boolean().required() }).required(),
-  clickTracking: Joi.object({ clickTrackingParams: Joi.string().required() }).required(),
-}).meta({ className: 'ClientResponse' });
+export const clientResponseSchema = z.strictObject({
+  client: clientSchema,
+  user: z.strictObject({ lockedSafetyMode: z.boolean() }),
+  request: z.strictObject({ useSsl: z.boolean() }),
+  clickTracking: z.strictObject({ clickTrackingParams: z.string() }),
+});
+
+export type Client = z.infer<typeof clientSchema>;
+export type ClientResponse = z.infer<typeof clientResponseSchema>;

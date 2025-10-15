@@ -1,7 +1,6 @@
-import Joi from 'joi';
-import { simpleText } from './channel.js';
+import * as z from 'zod';
+import { simpleText } from './shared.js';
 
-export const playlistSchema = Joi.object({
-  playlistId: Joi.string().required(),
-  title: Joi.object(simpleText).required(),
-}).meta({ className: 'Playlist' });
+export const playlistSchema = z.strictObject({ playlistId: z.string(), title: simpleText });
+
+export type Playlist = z.infer<typeof playlistSchema>;

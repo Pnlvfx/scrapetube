@@ -1,59 +1,59 @@
-import Joi from 'joi';
-import { badgesSchema, longBylineTextSchema, navigationEndpointSchema, runSchema, shortBylineTextSchema, thumbnailWrapperSchema } from './shared.js';
+import * as z from 'zod';
+import {
+  badgesSchema,
+  longBylineTextSchema,
+  navigationEndpointSchema,
+  runSchema,
+  shortBylineTextSchema,
+  simpleText,
+  thumbnailWrapperSchema,
+} from './shared.js';
 
-export const videoCountTextSchema = Joi.object({
-  accessibility: Joi.object({
-    accessibilityData: Joi.object({
-      label: Joi.string().required(),
-    }).required(),
+const videoCountTextSchema = z.strictObject({
+  accessibility: z.strictObject({
+    accessibilityData: z.strictObject({
+      label: z.string(),
+    }),
   }),
-  simpleText: Joi.string(),
-  runs: Joi.array().items(runSchema),
-}).meta({ className: 'VideoCountText' });
+  simpleText: z.string(),
+  runs: z.array(runSchema),
+});
 
-export const subscriptionButtonSchema = Joi.object({
-  subscribed: Joi.boolean().required(),
-}).meta({ className: 'SubscriptionButton' });
+const subscriptionButtonSchema = z.strictObject({ subscribed: z.boolean() });
 
-export const subscribeButtonSchema = Joi.object({
-  buttonRenderer: Joi.object({
-    style: Joi.string().valid('STYLE_DESTRUCTIVE').required(),
-    size: Joi.string().valid('SIZE_DEFAULT').required(),
-    isDisabled: Joi.boolean().required(),
-    text: Joi.object({
-      runs: Joi.array()
-        .items(
-          Joi.object({
-            text: Joi.string().required(),
-          }),
-        )
-        .required(),
-    }).required(),
-    navigationEndpoint: navigationEndpointSchema.required(),
-    trackingParams: Joi.string().required(),
-  }).required(),
-}).meta({ className: 'SubscribeButton' });
+const subscribeButtonSchema = z.strictObject({
+  buttonRenderer: z.strictObject({
+    style: z.literal('STYLE_DESTRUCTIVE'),
+    size: z.literal('SIZE_DEFAULT'),
+    isDisabled: z.boolean(),
+    text: z.strictObject({
+      runs: z.array(
+        z.strictObject({
+          text: z.string(),
+        }),
+      ),
+    }),
+    navigationEndpoint: navigationEndpointSchema,
+    trackingParams: z.string(),
+  }),
+});
 
-const descriptionSnippet = {
-  runs: Joi.array().items(runSchema).required(),
-};
+const descriptionSnippet = z.strictObject({ runs: z.array(runSchema) });
 
-export const simpleText = {
-  simpleText: Joi.string().required(),
-};
-
-export const channelSchema = Joi.object({
-  channelId: Joi.string().required(),
-  title: Joi.object(simpleText).required(),
-  navigationEndpoint: navigationEndpointSchema.required(),
-  thumbnail: thumbnailWrapperSchema.required(),
-  descriptionSnippet: Joi.object(descriptionSnippet),
-  shortBylineText: shortBylineTextSchema.required(),
-  videoCountText: videoCountTextSchema.required(),
-  subscriptionButton: subscriptionButtonSchema.required(),
+export const channelSchema = z.strictObject({
+  channelId: z.string(),
+  title: simpleText,
+  navigationEndpoint: navigationEndpointSchema,
+  thumbnail: thumbnailWrapperSchema,
+  descriptionSnippet: descriptionSnippet,
+  shortBylineText: shortBylineTextSchema,
+  videoCountText: videoCountTextSchema,
+  subscriptionButton: subscriptionButtonSchema,
   ownerBadges: badgesSchema,
-  subscriberCountText: Joi.object(simpleText),
-  subscribeButton: subscribeButtonSchema.required(),
-  trackingParams: Joi.string().required(),
-  longBylineText: longBylineTextSchema.required(),
-}).meta({ className: 'Channel' });
+  subscriberCountText: simpleText,
+  subscribeButton: subscribeButtonSchema,
+  trackingParams: z.string(),
+  longBylineText: longBylineTextSchema,
+});
+
+export type Channel = z.infer<typeof channelSchema>;

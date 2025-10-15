@@ -1,129 +1,93 @@
-import Joi from 'joi';
+import * as z from 'zod';
 
-export const webCommandMetadataSchema = Joi.object({
-  url: Joi.string(),
-  webPageType: Joi.string().valid(
-    'WEB_PAGE_TYPE_CHANNEL',
-    'WEB_PAGE_TYPE_WATCH',
-    'WEB_PAGE_TYPE_UNKNOWN',
-    'WEB_PAGE_TYPE_SEARCH',
-    'WEB_PAGE_TYPE_SHORTS',
-  ),
-  rootVe: Joi.number(),
-  apiUrl: Joi.string(),
-  sendPost: Joi.boolean(),
-}).meta({ className: 'WebCommandMetadata' });
+export const webCommandMetadataSchema = z.strictObject({
+  url: z.string(),
+  webPageType: z.literal(['WEB_PAGE_TYPE_CHANNEL', 'WEB_PAGE_TYPE_WATCH', 'WEB_PAGE_TYPE_UNKNOWN', 'WEB_PAGE_TYPE_SEARCH', 'WEB_PAGE_TYPE_SHORTS']),
+  rootVe: z.number(),
+  apiUrl: z.string(),
+  sendPost: z.boolean(),
+});
 
-export const commandMetadata = Joi.object({
-  webCommandMetadata: webCommandMetadataSchema.required(),
-}).meta({ className: 'CommandMetadata' });
+export const commandMetadata = z.strictObject({ webCommandMetadata: webCommandMetadataSchema });
+export const browseEndpointSchema = z.strictObject({ browseId: z.string(), params: z.string(), canonicalBaseUrl: z.string() });
 
-export const browseEndpointSchema = Joi.object({
-  browseId: Joi.string().required(),
-  params: Joi.string(),
-  canonicalBaseUrl: Joi.string(),
-}).meta({ className: 'BrowseEndpoint' });
-
-const signInEndpoint = {
-  nextEndpoint: Joi.object({
-    clickTrackingParams: Joi.string().required(),
+const signInEndpoint = z.strictObject({
+  nextEndpoint: z.strictObject({
+    clickTrackingParams: z.string(),
     commandMetadata,
-    searchEndpoint: Joi.object({ query: Joi.string().required(), params: Joi.string() }),
+    searchEndpoint: z.strictObject({ query: z.string(), params: z.string() }),
   }),
-  continueAction: Joi.string().required(),
-};
+  continueAction: z.string(),
+});
 
-const watchEndpoint = {
+const watchEndpoint = z.strictObject({
   // for search video
-  videoId: Joi.string(),
-  params: Joi.string(),
-  playerParams: Joi.string(),
-  playerExtraUrlParams: Joi.array().items(Joi.object({ key: Joi.string().required(), value: Joi.string().required() })),
-  watchEndpointSupportedOnesieConfig: Joi.object({
-    html5PlaybackOnesieConfig: Joi.object({
-      commonConfig: Joi.object({
-        url: Joi.string().required(),
-      }).required(),
-    }).required(),
+  videoId: z.string(),
+  params: z.string(),
+  playerParams: z.string(),
+  playerExtraUrlParams: z.array(z.strictObject({ key: z.string(), value: z.string() })),
+  watchEndpointSupportedOnesieConfig: z.strictObject({
+    html5PlaybackOnesieConfig: z.strictObject({
+      commonConfig: z.strictObject({
+        url: z.string(),
+      }),
+    }),
   }),
-  startTimeSeconds: Joi.number(),
-};
+  startTimeSeconds: z.number(),
+});
 
-const reelWatchEndpointOverlay = undefined;
-const loggingContext = undefined;
+export const thumbnailSchema = z.strictObject({ url: z.string(), width: z.number(), height: z.number() });
+export const thumbnailWrapperSchema = z.strictObject({ thumbnails: z.array(thumbnailSchema), isOriginalAspectRatio: z.boolean() });
 
-export const thumbnailSchema = Joi.object({
-  url: Joi.string().required(),
-  width: Joi.number().required(),
-  height: Joi.number().required(),
-}).meta({ className: 'Thumbnail' });
-
-export const thumbnailWrapperSchema = Joi.object({
-  thumbnails: Joi.array().items(thumbnailSchema).required(),
-  isOriginalAspectRatio: Joi.boolean(),
-}).meta({ className: 'ThumbnailWrapper' });
-
-export const navigationEndpointSchema = Joi.object({
-  ...watchEndpoint,
-  clickTrackingParams: Joi.string(),
+export const navigationEndpointSchema = z.strictObject({
+  ...watchEndpoint.shape,
+  clickTrackingParams: z.string(),
   commandMetadata,
   browseEndpoint: browseEndpointSchema, // for search channel
-  watchEndpoint: Joi.object(watchEndpoint),
-  signInEndpoint: Joi.object(signInEndpoint),
-  reelWatchEndpoint: Joi.object({
-    ...watchEndpoint,
-    thumbnail: thumbnailWrapperSchema.required(),
-    overlay: Joi.object(reelWatchEndpointOverlay).required(),
-    sequenceProvider: Joi.string().required(),
-    sequenceParams: Joi.string().required(),
-    loggingContext: Joi.object(loggingContext),
-    ustreamerConfig: Joi.string(),
+  watchEndpoint: watchEndpoint,
+  signInEndpoint: signInEndpoint,
+  reelWatchEndpoint: z.strictObject({
+    ...watchEndpoint.shape,
+    thumbnail: thumbnailWrapperSchema,
+    overlay: z.strictObject({}),
+    sequenceProvider: z.string(),
+    sequenceParams: z.string(),
+    loggingContext: z.strictObject({}),
+    ustreamerConfig: z.string(),
   }),
-}).meta({ className: 'NavigationEndpoint' });
+});
 
-export const runSchema = Joi.object({
-  text: Joi.string().required(),
-  bold: Joi.bool(),
-  navigationEndpoint: navigationEndpointSchema,
-}).meta({ className: 'Run' });
+export const runSchema = z.strictObject({ text: z.string(), bold: z.boolean(), navigationEndpoint: navigationEndpointSchema });
 
-export const shortBylineTextSchema = Joi.object({
-  runs: Joi.array()
-    .items(
-      Joi.object({
-        text: Joi.string().required(),
-        navigationEndpoint: navigationEndpointSchema.required(),
-      }),
-    )
-    .required(),
-}).meta({ className: 'ShortBylineText' });
+export const shortBylineTextSchema = z.strictObject({
+  runs: z.array(
+    z.strictObject({
+      text: z.string(),
+      navigationEndpoint: navigationEndpointSchema,
+    }),
+  ),
+});
 
-export const longBylineTextSchema = Joi.object({
-  runs: Joi.array()
-    .items(
-      Joi.object({
-        text: Joi.string().required(),
-        navigationEndpoint: navigationEndpointSchema.required(),
-      }),
-    )
-    .required(),
-}).meta({ className: 'LongBylineText' });
+export const longBylineTextSchema = z.strictObject({
+  runs: z.array(
+    z.strictObject({
+      text: z.string(),
+      navigationEndpoint: navigationEndpointSchema,
+    }),
+  ),
+});
 
-export const metadataBadgeRendererSchema = Joi.object({
-  metadataBadgeRenderer: Joi.object({
-    icon: Joi.object({ iconType: Joi.string().valid('CHECK_CIRCLE_THICK', 'OFFICIAL_ARTIST_BADGE', 'AUDIO_BADGE', 'LIVE').required() }),
-    style: Joi.string().valid(
-      'BADGE_STYLE_TYPE_VERIFIED',
-      'BADGE_STYLE_TYPE_SIMPLE',
-      'BADGE_STYLE_TYPE_VERIFIED_ARTIST',
-      'BADGE_STYLE_TYPE_LIVE_NOW',
-    ),
-    tooltip: Joi.string(),
-    trackingParams: Joi.string().required(),
-    accessibilityData: Joi.object({ label: Joi.string() }),
-    groups: Joi.array().items(Joi.string()),
-    label: Joi.string(),
-  }).required(),
-}).meta({ className: 'MetadataBadgeRenderer' });
+export const metadataBadgeRendererSchema = z.strictObject({
+  metadataBadgeRenderer: z.strictObject({
+    icon: z.strictObject({ iconType: z.literal(['CHECK_CIRCLE_THICK', 'OFFICIAL_ARTIST_BADGE', 'AUDIO_BADGE', 'LIVE']) }),
+    style: z.literal(['BADGE_STYLE_TYPE_VERIFIED', 'BADGE_STYLE_TYPE_SIMPLE', 'BADGE_STYLE_TYPE_VERIFIED_ARTIST', 'BADGE_STYLE_TYPE_LIVE_NOW']),
+    tooltip: z.string(),
+    trackingParams: z.string(),
+    accessibilityData: z.strictObject({ label: z.string() }),
+    groups: z.array(z.string()),
+    label: z.string(),
+  }),
+});
 
-export const badgesSchema = Joi.array().items(metadataBadgeRendererSchema.required()).meta({ className: 'Badges' });
+export const badgesSchema = z.array(metadataBadgeRendererSchema);
+export const simpleText = z.strictObject({ simpleText: z.string() });

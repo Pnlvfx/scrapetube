@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import type { Client, ClientResponse } from './interfaces/client.js';
+import type { Client } from './schemas/client.js';
 import type { SearchSelector, YTResult } from './search.js';
 import type { ChannelSelector } from './channel.js';
-import type { ContinuationEndpoint, InitialData } from './interfaces/response.js';
+import { initialDataSchema, type ContinuationEndpoint, type InitialData } from './schemas/response.js';
 import type { PlaylistSelector } from './playlist.js';
-import type { SearchHelper } from './porco-dio.js';
-import coraline, { getEntries } from 'coraline';
+import type { SearchHelper } from './types.js';
 import { clientResponseSchema } from './schemas/client.js';
+import { setTimeout } from 'node:timers/promises';
+import { fetchError } from '@goatjs/core/errors/fetch';
+import { getEntries } from '@goatjs/core/object';
 
 type SelectorKeys = SearchSelector | ChannelSelector | PlaylistSelector;
 
@@ -58,14 +60,12 @@ export const getVideos = async function* <T extends keyof YTResult, K extends Se
   while (true) {
     if (isFirst) {
       const html = await getInitialData(url);
-      const res = JSON.parse(getJsonFromHtml(html, 'INNERTUBE_CONTEXT', 2, '"}},') + '"}}') as ClientResponse;
-      await clientResponseSchema.validateAsync(res);
+      const res = await clientResponseSchema.parseAsync(JSON.parse(getJsonFromHtml(html, 'INNERTUBE_CONTEXT', 2, '"}},') + '"}}'));
       client = res.client;
       apiKey = getJsonFromHtml(html, 'innertubeApiKey', 3);
       headers['X-Youtube-Client-Name'] = '1';
       headers['X-Youtube-Client-Version'] = client.clientVersion;
-      const response = JSON.parse(getJsonFromHtml(html, 'var ytInitialData = ', 0, '};') + '}') as InitialData;
-      // await initialDataSchema.validateAsync(response); /** @TODO enable back this when working even if it's a mess. */
+      const response = await initialDataSchema.parseAsync(JSON.parse(getJsonFromHtml(html, 'var ytInitialData = ', 0, '};') + '}'));
       data = searchDict<K>(response, selectorList).next();
       nextData = getNextData(data, sortBy);
       isFirst = false;
@@ -84,7 +84,7 @@ export const getVideos = async function* <T extends keyof YTResult, K extends Se
       }
     }
     if (!nextData || quit) break;
-    await coraline.wait(sleep);
+    await setTimeout(sleep);
   }
 };
 
@@ -102,17 +102,15 @@ const getAjaxData = async (api_endpoint: string, apiKey: string, nextData: NextD
       'content-type': 'application/json',
     },
   });
-  if (!res.ok) throw new Error(`${res.status.toString()}: ${res.statusText}`);
-  const data = (await res.json()) as InitialData;
-  // await initialDataSchema.validateAsync(data);  // await initialDataSchema.validateAsync(response); /** @TODO enable back this when working even if it's a mess. */
-  return data;
+  if (!res.ok) throw fetchError(res.statusText, { status: res.status });
+  return initialDataSchema.parseAsync(await res.json());
 };
 
 const getInitialData = async (url: string) => {
   headers['cookie'] = 'CONSENT=YES+cb; domain=.youtube.com;';
   const query = new URLSearchParams({ ucbcb: '1' });
   const res = await fetch(url + '?' + query.toString(), { headers });
-  if (!res.ok) throw new Error(`${res.status.toString()}: ${res.statusText}`);
+  if (!res.ok) throw fetchError(res.statusText, { status: res.status });
   return res.text();
 };
 

@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import * as z from 'zod';
 import {
   badgesSchema,
   browseEndpointSchema,
@@ -7,143 +7,120 @@ import {
   navigationEndpointSchema,
   runSchema,
   shortBylineTextSchema,
+  simpleText,
   thumbnailWrapperSchema,
   webCommandMetadataSchema,
 } from './shared.js';
-import { simpleText } from './channel.js';
 
-export const accessibilityDataSchema = Joi.object({
-  label: Joi.string(),
-}).meta({ className: 'AccessibilityData' });
+const accessibilityDataSchema = z.strictObject({ label: z.string() });
+const accessibilitySchema = z.strictObject({ accessibilityData: accessibilityDataSchema });
+const titleSchema = z.strictObject({ runs: z.array(runSchema), accessibility: accessibilitySchema });
+const lengthTextSchema = z.strictObject({ ...simpleText.shape, accessibility: accessibilitySchema });
+const viewCountTextSchema = z.strictObject({ simpleText: z.string(), runs: z.array(runSchema) });
+const ownerTextSchema = z.strictObject({ runs: z.array(runSchema) });
 
-export const accessibilitySchema = Joi.object({
-  accessibilityData: accessibilityDataSchema.required(),
-}).meta({ className: 'Accessibility' });
-
-export const titleSchema = Joi.object({
-  runs: Joi.array().items(runSchema).required(),
-  accessibility: accessibilitySchema.required(),
-}).meta({ className: 'Title' });
-
-export const lengthTextSchema = Joi.object({
-  ...simpleText,
-  accessibility: accessibilitySchema.required(),
-}).meta({ className: 'LengthText' });
-
-export const viewCountTextSchema = Joi.object({
-  simpleText: Joi.string(),
-  runs: Joi.array().items(runSchema),
-}).meta({ className: 'ViewCountText' });
-
-export const ownerTextSchema = Joi.object({
-  runs: Joi.array().items(runSchema).required(),
-}).meta({ className: 'OwnerText' });
-
-export const accessibilityDataWithObjectSchema = Joi.object({
+const accessibilityDataWithObjectSchema = z.strictObject({
   accessibility: accessibilitySchema,
-  simpleText: Joi.string(),
-  runs: Joi.array().items(runSchema),
-}).meta({ className: 'AccessibilityDataWithObject' });
+  simpleText: z.string(),
+  runs: z.array(runSchema),
+});
 
-/** @TODO Fill in this objects. */
-const menuSchema = undefined;
-const accessibility = undefined;
-const thumbnailOverlay = undefined;
-const movingThumbnailRenderer = undefined;
-const snippetTimestamp = undefined;
-const timestampEndpoint = undefined;
+const menuSchema = z.strictObject({});
+const accessibility = z.strictObject({});
+const thumbnailOverlay = z.strictObject({});
+const movingThumbnailRenderer = z.strictObject({});
+const snippetTimestamp = z.strictObject({});
+const timestampEndpoint = z.strictObject({});
 
-export const menuRendererSchema = Joi.object({
-  menuRenderer: Joi.object({
-    items: Joi.array().items(Joi.object(menuSchema)),
-    trackingParams: Joi.string().required(),
-    accessibility: Joi.object(accessibility),
-  }).required(),
-}).meta({ className: 'MenuRenderer' });
+const menuRendererSchema = z.strictObject({
+  menuRenderer: z.strictObject({
+    items: z.array(menuSchema),
+    trackingParams: z.string(),
+    accessibility,
+  }),
+});
 
-export const channelThumbnailWithLinkRendererSchema = Joi.object({
-  channelThumbnailWithLinkRenderer: Joi.object({
-    thumbnail: thumbnailWrapperSchema.required(),
-    navigationEndpoint: navigationEndpointSchema.required(),
-    accessibility: Joi.object(accessibility),
-  }).required(),
-}).meta({ className: 'ChannelThumbnailWithLinkRenderer' });
+const channelThumbnailWithLinkRendererSchema = z.strictObject({
+  channelThumbnailWithLinkRenderer: z.strictObject({
+    thumbnail: thumbnailWrapperSchema,
+    navigationEndpoint: navigationEndpointSchema,
+    accessibility,
+  }),
+});
 
-export const inlinePlaybackEndpointSchema = Joi.object({
-  clickTrackingParams: Joi.string().required(),
-  commandMetadata: commandMetadata.required(),
-  watchEndpoint: navigationEndpointSchema.required(),
-}).meta({ className: 'InlinePlaybackEndpoint' });
+const inlinePlaybackEndpointSchema = z.strictObject({
+  clickTrackingParams: z.string(),
+  commandMetadata: commandMetadata,
+  watchEndpoint: navigationEndpointSchema,
+});
 
-export const snippetSchema = Joi.object({
-  snippetText: accessibilityDataWithObjectSchema.required(),
-  snippetHoverText: accessibilityDataWithObjectSchema.required(),
-  snippetTimestamp: Joi.object(snippetTimestamp),
-  maxOneLine: Joi.boolean(),
-  timestampEndpoint: Joi.object(timestampEndpoint),
-}).meta({ className: 'Snippet' });
+const snippetSchema = z.strictObject({
+  snippetText: accessibilityDataWithObjectSchema,
+  snippetHoverText: accessibilityDataWithObjectSchema,
+  snippetTimestamp,
+  maxOneLine: z.boolean(),
+  timestampEndpoint,
+});
 
-export const detailedMetadataSnippetsSchema = Joi.array().items(snippetSchema.required()).meta({ className: 'DetailedMetadataSnippets' });
+const detailedMetadataSnippetsSchema = z.array(snippetSchema);
 
-export const avatarViewModelSchema = Joi.object({
-  image: Joi.object({
-    sources: Joi.array()
-      .items(Joi.object({ url: Joi.string().required(), width: Joi.number().required(), height: Joi.number().required() }))
-      .required(),
-  }).required(),
-  avatarImageSize: Joi.string().valid('AVATAR_SIZE_M').required(),
-}).meta({ className: 'AvatarViewModel' });
+const avatarViewModelSchema = z.strictObject({
+  image: z.strictObject({
+    sources: z.array(z.strictObject({ url: z.string(), width: z.number(), height: z.number() })),
+  }),
+  avatarImageSize: z.literal('AVATAR_SIZE_M'),
+});
 
-export const videoSchema = Joi.object({
-  videoId: Joi.string().required(),
-  thumbnail: thumbnailWrapperSchema.required(),
-  title: titleSchema.required(),
-  longBylineText: longBylineTextSchema.required(),
+export const videoSchema = z.strictObject({
+  videoId: z.string(),
+  thumbnail: thumbnailWrapperSchema,
+  title: titleSchema,
+  longBylineText: longBylineTextSchema,
   publishedTimeText: simpleText,
   lengthText: lengthTextSchema,
-  viewCountText: viewCountTextSchema.required(),
-  navigationEndpoint: navigationEndpointSchema.required(),
+  viewCountText: viewCountTextSchema,
+  navigationEndpoint: navigationEndpointSchema,
   badges: badgesSchema,
   ownerBadges: badgesSchema,
-  ownerText: ownerTextSchema.required(),
-  shortBylineText: shortBylineTextSchema.required(),
-  trackingParams: Joi.string().required(),
-  showActionMenu: Joi.boolean().required(),
-  shortViewCountText: accessibilityDataWithObjectSchema.required(),
-  menu: menuRendererSchema.required(),
-  channelThumbnailSupportedRenderers: channelThumbnailWithLinkRendererSchema.required(),
-  thumbnailOverlays: Joi.array().items(Joi.object(thumbnailOverlay)).required(),
-  richThumbnail: Joi.object({
-    movingThumbnailRenderer: Joi.object(movingThumbnailRenderer).required(),
+  ownerText: ownerTextSchema,
+  shortBylineText: shortBylineTextSchema,
+  trackingParams: z.string(),
+  showActionMenu: z.boolean(),
+  shortViewCountText: accessibilityDataWithObjectSchema,
+  menu: menuRendererSchema,
+  channelThumbnailSupportedRenderers: channelThumbnailWithLinkRendererSchema,
+  thumbnailOverlays: z.array(thumbnailOverlay),
+  richThumbnail: z.strictObject({
+    movingThumbnailRenderer: movingThumbnailRenderer,
   }),
   detailedMetadataSnippets: detailedMetadataSnippetsSchema,
-  expandableMetadata: Joi.object(),
+  expandableMetadata: z.strictObject({}),
   inlinePlaybackEndpoint: inlinePlaybackEndpointSchema,
-  searchVideoResultEntityKey: Joi.string().required(),
-  avatar: Joi.object({
+  searchVideoResultEntityKey: z.string(),
+  avatar: z.strictObject({
     avatarViewModel: avatarViewModelSchema,
-    decoratedAvatarViewModel: Joi.object({
-      avatar: Joi.object({
-        avatarViewModel: avatarViewModelSchema.required(),
-      }),
-      a11yLabel: Joi.string().required(),
-      rendererContext: Joi.object({
-        commandContext: Joi.object({
-          onTap: Joi.object({
-            innertubeCommand: Joi.object({
-              clickTrackingParams: Joi.string().required(),
-              commandMetadata: Joi.object({
-                url: Joi.string(),
-                webPageType: Joi.string(),
-                rootVe: Joi.number(),
-                apiUrl: Joi.string(),
+    decoratedAvatarViewModel: z.strictObject({
+      avatar: z.strictObject({ avatarViewModel: avatarViewModelSchema }),
+      a11yLabel: z.string(),
+      rendererContext: z.strictObject({
+        commandContext: z.strictObject({
+          onTap: z.strictObject({
+            innertubeCommand: z.strictObject({
+              clickTrackingParams: z.string(),
+              commandMetadata: z.strictObject({
+                url: z.string(),
+                webPageType: z.string(),
+                rootVe: z.number(),
+                apiUrl: z.string(),
                 webCommandMetadata: webCommandMetadataSchema,
-              }).required(),
-              browseEndpoint: browseEndpointSchema.required(),
-            }).required(),
-          }).required(),
-        }).required(),
-      }).required(),
-    }).required(),
-  }).required(),
-}).meta({ className: 'Video' });
+              }),
+              browseEndpoint: browseEndpointSchema,
+            }),
+          }),
+        }),
+      }),
+    }),
+  }),
+});
+
+export type Video = z.infer<typeof videoSchema>;

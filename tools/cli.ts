@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import coraline from 'coraline';
-import scrapetube from '../src/scrapetube.js';
+import { scrapetube } from '../src/scrapetube.js';
+import { input } from '@goatjs/node/input';
 
 const test = async (q?: string) => {
   if (!q) {
@@ -11,7 +11,7 @@ const test = async (q?: string) => {
     case '1': {
       const videos = scrapetube.search('Reuters', { limit: 15, type: 'channel' });
       for await (const video of videos) {
-        coraline.log(video);
+        console.log(video);
         break;
       }
       break;
@@ -51,8 +51,8 @@ const test = async (q?: string) => {
 const title = 'Press 1 to test channel search, press 2 to test video search, press 3 to test playlist search, press 4 to test get channel';
 
 const run = async () => {
-  const input = await coraline.input.create({ title });
-  await test(input);
+  const text = await input.create({ title });
+  await test(text);
   void run();
 };
 
