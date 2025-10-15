@@ -1,7 +1,7 @@
-import type { Channel } from './schemas/channel.js';
-import type { Playlist } from './schemas/playlist.js';
-import type { ContinuationEndpoint, FeedFilterChipBarRenderer, InitialDataContents } from './schemas/response.js';
-import type { Video } from './schemas/video.js';
+import type { Channel } from './types/channel.js';
+import type { Playlist } from './types/playlist.js';
+import type { ContinuationEndpoint, FeedFilterChipBarRenderer, InitialDataContents } from './types/response.js';
+import type { Video } from './types/video.js';
 
 export interface SearchHelper {
   contents: InitialDataContents;
