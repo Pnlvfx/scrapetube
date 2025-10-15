@@ -91,3 +91,5 @@ export const metadataBadgeRendererSchema = z.strictObject({
 
 export const badgesSchema = z.array(metadataBadgeRendererSchema);
 export const simpleText = z.strictObject({ simpleText: z.string() });
+
+export type Thumbnail = z.infer<typeof thumbnailSchema>;
