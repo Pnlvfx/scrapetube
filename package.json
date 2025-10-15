@@ -13,9 +13,14 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    "types": "./dist/scrapetube.d.ts",
-    "import": "./dist/scrapetube.js",
-    "require": "./dist/scrapetube.js"
+    ".": {
+      "types": "./dist/scrapetube.d.ts",
+      "import": "./dist/scrapetube.js"
+    },
+    "./types/*": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./dist/types/*.js"
+    }
   },
   "scripts": {
     "tsc": "tsc --noEmit",
