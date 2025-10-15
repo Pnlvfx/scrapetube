@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import type { Client } from './schemas/client.js';
+import type { Client } from './types/client.js';
 import type { SearchSelector, YTResult } from './search.js';
 import type { ChannelSelector } from './channel.js';
-import { initialDataSchema, type ContinuationEndpoint, type InitialData } from './schemas/response.js';
+import { initialDataSchema, type ContinuationEndpoint, type InitialData } from './types/response.js';
 import type { PlaylistSelector } from './playlist.js';
 import type { SearchHelper } from './types.js';
-import { clientResponseSchema } from './schemas/client.js';
+import { clientResponseSchema } from './types/client.js';
 import { setTimeout } from 'node:timers/promises';
 import { fetchError } from '@goatjs/core/errors/fetch';
 import { getEntries } from '@goatjs/core/object';
